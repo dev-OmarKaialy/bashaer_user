@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AppTheme.heroGradient: electricViolet -> nitroBlue -> aqua -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="315"
+        android:startColor="#7C4DFF"
+        android:centerColor="#2E6BFF"
+        android:endColor="#00B8D9"
+        android:type="linear" />
+</shape>

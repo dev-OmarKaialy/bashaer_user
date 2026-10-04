@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git reset --hard*)",
+      "Bash(git clean *)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git rebase *)",
+      "Bash(git commit --amend*)",
+      "Bash(git branch -D *)",
+      "Bash(git stash drop*)",
+      "Bash(git stash clear*)",
+      "Bash(git checkout -- *)",
+      "Bash(git filter-branch *)",
+      "Edit(**/*.g.dart)",
+      "Edit(**/*.freezed.dart)",
+      "Edit(lib/core/services/dependencies.config.dart)",
+      "Edit(.claude/rules/**)",
+      "Edit(.cursor/rules/**)",
+      "Edit(.github/instructions/**)",
+      "Edit(.github/copilot-instructions.md)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(fvm flutter pub add *)",
+      "Bash(fvm flutter pub remove *)",
+      "Bash(fvm flutter pub upgrade *)",
+      "Bash(fvm dart pub add *)",
+      "Bash(fvm dart pub remove *)"
+    ],
+    "allow": [
+      "Bash(fvm flutter analyze*)",
+      "Bash(fvm dart format *)",
+      "Bash(fvm flutter test*)",
+      "Bash(fvm dart run build_runner build *)",
+      "Bash(fvm flutter pub get)",
+      "Bash(fvm dart run tool/agents/sync_agent_config.dart*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-dart.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

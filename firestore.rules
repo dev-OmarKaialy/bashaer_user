@@ -1,0 +1,25 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Question bank: public reads (the student app syncs it to Hive).
+    match /categories/{slug} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /questions/{qid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // License rows are keyed by deviceId. Students may only create their own
+    // pending row (isActive: false) and read back that row. Approving / editing
+    // stays in the admin console (Firebase Auth is not used by the app).
+    match /licenses/{deviceId} {
+      allow get: if true;
+      allow create: if request.resource.data.deviceId == deviceId
+          && request.resource.data.isActive == false;
+      allow update, delete: if false;
+    }
+  }
+}

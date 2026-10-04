@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "87357298493",
+    "project_id": "bashaer-68ee6",
+    "storage_bucket": "bashaer-68ee6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87357298493:android:b47ea4dbe97f741b0a1754",
+        "android_client_info": {
+          "package_name": "com.bashaer.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFoLMy_jf_MYha5nwR381g9IGZAI_WORo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87357298493:android:059b13238553c6390a1754",
+        "android_client_info": {
+          "package_name": "com.bashaer.driving"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFoLMy_jf_MYha5nwR381g9IGZAI_WORo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

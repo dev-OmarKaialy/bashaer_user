@@ -1,0 +1,2008 @@
+{
+  "metadata": {
+    "school": "مدرسة البشائر لتعليم قيادة السيارات",
+    "subject": "ميكانيك السيارات",
+    "instructor": "م. سمير وتي",
+    "source": "docs/quiz_01_driving_mechanics.md",
+    "answerKey": "inferred_review_required",
+    "hintsAndExplanations": "drafted_review_required"
+  },
+  "categories": [
+    {
+      "id": "cooling",
+      "name": "نظام التبريد",
+      "icon": "snowflake"
+    },
+    {
+      "id": "lubrication",
+      "name": "نظام التزييت",
+      "icon": "oil-can"
+    },
+    {
+      "id": "engine",
+      "name": "أجزاء المحرك",
+      "icon": "engine"
+    },
+    {
+      "id": "fuelIgnition",
+      "name": "الوقود والإشعال",
+      "icon": "gas-pump"
+    },
+    {
+      "id": "circuits",
+      "name": "الأنظمة الكهربائية",
+      "icon": "bolt"
+    },
+    {
+      "id": "batteryElectric",
+      "name": "البطارية والشحن",
+      "icon": "car-battery"
+    },
+    {
+      "id": "transmission",
+      "name": "الدبرياج وناقل الحركة",
+      "icon": "gears"
+    },
+    {
+      "id": "trafficSigns",
+      "name": "إشارات المرور",
+      "icon": "traffic-light",
+      "description": "التعرّف على إشارات المرور من الصورة"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q01",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "عند ارتفاع درجة حرارة المحرك يمنع تشغيل المكيف على درجة حرارة عالية.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q02",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "عند ارتفاع درجة حرارة المحرك يجب إطفاء المحرك مباشرة وتفقد الماء.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q03",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "عند ارتفاع درجة حرارة المحرك يجب فتح غطاء الرادياتور مباشرة وإضافة الماء لكي لا يتماسك المحرك.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q04",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "عند ارتفاع درجة حرارة المحرك يجب وضع عازل على اليد وفتح غطاء الرادياتور مباشرة.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q05",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "يضاف مانع التجمد إلى ماء التبريد في الشتاء لمنع التكلس والصدأ.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q06",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "يضاف مانع التجمد إلى ماء التبريد في الصيف لمنع التجمد.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q07",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "قربة الماء محددة بخطين أعلى وأدنى والمستوى الصحيح يجب أن يكون في الوسط.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q08",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "انسداد مجاري الرادياتر أو الزعانف المحيطة بالمجاري، التصرف المناسب: صيانة الرادياتر (التشييش) وغسله بالمغسلة.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q09",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "عطل في مضخة الماء (سماع صوت حشن بشكل واضح) يتم الإصلاح بالتبديل.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q10",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "تهريب الماء من (الخراطيم – الرادياتر – جوان المضخة – غطاء الرادياتر)، التصرف هو التبديل والإصلاح.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q11",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "عطل في الترموستات (صباب الحرارة) أو انكماشه يمكن إصلاحه.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q12",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "عند تآكل جوان الكولاس تظهر فقاعات ويتطاير الماء عند فتح غطاء الرادياتر.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q13",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "ضعف المروحة أو توقفها يتم الإصلاح بتبديل المروحة، وفحص قشاط التدوير وتبديله في حال القطع أو الارتخاء، وفحص المحرك الكهربائي أو ريليه التشغيل.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q14",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "يجب تبديل الزيت بعد الانتهاء من عملية الروداج مباشرة وسير المركبة بحدود 1000 كيلو متر.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q15",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "عملية روداج المحرك هي وصول سرعة المحرك (سرعة الضوجان) إلى حدود الخطوط الحمراء على مقياس السرعة.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q16",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "عند ظهور دخان أبيض مائل للزرقة من العادم هذا يدل على حرق الزيت.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q17",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "في حال نقص الزيت هذا يدل على تعب المحرك وتهريب الزيت خارج المحرك.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q18",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "في حال زيادة كمية الزيت هذا يدل على تلف جوان الكولاس واختلاط الماء مع الزيت.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q19",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "عند إنارة ضوء الزيت على التابلو يكون بسبب نقصان الزيت أو انخفاض ضغط الزيت.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q20",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "عند إنارة ضوء الزيت على التابلو يجب إيقاف السيارة بالسرعة القصوى وإبقاء المحرك شغال حتى تنخفض درجة حرارته.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q21",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "لفحص الزيت يجب أن يكون المحرك مطفأ وبارد والسيارة على أرض مستوية.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q22",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "لتبديل الزيت يجب أن يكون المحرك مطفأ وساخن والسيارة على أرض مستوية.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q23",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "القراءة الصحيحة لمقياس الزيت تكون بين F و L.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q24",
+      "categoryId": "lubrication",
+      "type": "true_false",
+      "title": "يجب تبديل الزيت كل 2500 كيلو متر وتبديل المصفاة الناعمة مع كل تبديل.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q25",
+      "categoryId": "lubrication",
+      "type": "single_choice",
+      "title": "وظيفة أداة التزييت هي:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "إيصال الزيت لجميع أجزاء المحرك المتحركة"
+        },
+        {
+          "id": "a2",
+          "text": "تقليل الاحتكاك والحرارة"
+        },
+        {
+          "id": "a3",
+          "text": "سلاسة في الحركة لئلا تتآكل القطع المتحركة"
+        },
+        {
+          "id": "a4",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a4"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q26",
+      "categoryId": "engine",
+      "type": "single_choice",
+      "title": "عمود المرفق يعتبر من الأجزاء (الثابتة – المتحركة) في المحرك.",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "الثابتة"
+        },
+        {
+          "id": "a2",
+          "text": "المتحركة"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q27",
+      "categoryId": "engine",
+      "type": "single_choice",
+      "title": "الفولان (الحدافة) يعتبر من الأجزاء (الثابتة – المتحركة) في المحرك.",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "الثابتة"
+        },
+        {
+          "id": "a2",
+          "text": "المتحركة"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q28",
+      "categoryId": "engine",
+      "type": "single_choice",
+      "title": "كتلة المحرك تعتبر من الأجزاء (الثابتة – المتحركة) في المحرك.",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "الثابتة"
+        },
+        {
+          "id": "a2",
+          "text": "المتحركة"
+        }
+      ],
+      "correctAnswerIds": [
+        "a1"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q29",
+      "categoryId": "engine",
+      "type": "single_choice",
+      "title": "عمود الكامات (ميل السنتريك) يعتبر من الأجزاء (الثابتة – المتحركة) في المحرك.",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "الثابتة"
+        },
+        {
+          "id": "a2",
+          "text": "المتحركة"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q30",
+      "categoryId": "fuelIgnition",
+      "type": "true_false",
+      "title": "وظيفة الديسبرتور هي رفع قيمة الكهرباء من 12 فولط إلى 25 ألف فولط.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q31",
+      "categoryId": "fuelIgnition",
+      "type": "true_false",
+      "title": "إذا كان لون دخان السيارة أبيض فهذا يدل على عدم احتراق الوقود بشكل جيد في المحرك.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q32",
+      "categoryId": "cooling",
+      "type": "true_false",
+      "title": "وظيفة صباب الحرارة السماح للماء بالخروج إلى الرادياتور عند ارتفاع درجة حرارة المحرك.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q33",
+      "categoryId": "engine",
+      "type": "single_choice",
+      "title": "وظيفة المرش في السيارة هي:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تحويل الطاقة الكهربائية إلى قوة حركة"
+        },
+        {
+          "id": "a2",
+          "text": "إعطاء حركة بدائية للمحرك لمساعدته على التشغيل"
+        },
+        {
+          "id": "a3",
+          "text": "تدوير الفولان"
+        },
+        {
+          "id": "a4",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a4"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q34",
+      "categoryId": "engine",
+      "type": "single_choice",
+      "title": "وظيفة الدينمو في السيارة هي:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "إعطاء الكهرباء إلى حساسات الفرامل"
+        },
+        {
+          "id": "a2",
+          "text": "نقل الحركة من الكرنك إلى ميل السنتريك بواسطة قشاط"
+        },
+        {
+          "id": "a3",
+          "text": "تحويل الحركة الدورانية إلى كهرباء"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q35",
+      "categoryId": "lubrication",
+      "type": "single_choice",
+      "title": "من مسببات حرق الزيت ونقصانه في المحرك:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تلف جوان الكولاس"
+        },
+        {
+          "id": "a2",
+          "text": "تآكل البستون والسكمانات"
+        },
+        {
+          "id": "a3",
+          "text": "تآكل جدران الأسطوانة"
+        },
+        {
+          "id": "a4",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a4"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q36",
+      "categoryId": "lubrication",
+      "type": "single_choice",
+      "title": "نقصان كمية الزيت وتسربه إلى خارج المركبة يكون بسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تلف جوان الكولاس"
+        },
+        {
+          "id": "a2",
+          "text": "ثقب بالكارتير"
+        },
+        {
+          "id": "a3",
+          "text": "برغي التفريغ غير مشدود"
+        },
+        {
+          "id": "a4",
+          "text": "تلف إحدى اللبادات"
+        },
+        {
+          "id": "a5",
+          "text": "تعب واهتلاك المحرك"
+        },
+        {
+          "id": "a6",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a6"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q37",
+      "categoryId": "lubrication",
+      "type": "single_choice",
+      "title": "سبب زيادة منسوب الزيت هو:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تلف جوان الكولاس الذي يؤدي إلى اختلاطه بالماء"
+        },
+        {
+          "id": "a2",
+          "text": "تلف السكمانات الذي يؤدي إلى اختلاطه بالوقود"
+        },
+        {
+          "id": "a3",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q38",
+      "categoryId": "fuelIgnition",
+      "type": "single_choice",
+      "title": "دخول الهواء إلى دارة الوقود يسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "يصبح دوران المحرك أفضل لتوفر كمية كافية من الهواء اللازم للاحتراق"
+        },
+        {
+          "id": "a2",
+          "text": "صعوبة إقلاع المحرك"
+        },
+        {
+          "id": "a3",
+          "text": "كل ما سبق خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q39",
+      "categoryId": "fuelIgnition",
+      "type": "true_false",
+      "title": "خروج دخان أسود من العادم دليل على وجود كمية هواء كبيرة بالنسبة للوقود.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q40",
+      "categoryId": "engine",
+      "type": "true_false",
+      "title": "تعطل البوجي في سيارات البنزين يمكن إصلاحه.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q41",
+      "categoryId": "engine",
+      "type": "single_choice",
+      "title": "ظهور دخان أبيض عند التشغيل الصباحي في الأجواء الباردة دليل على:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "حرق الزيت"
+        },
+        {
+          "id": "a2",
+          "text": "وجود بخار ماء مع العادم تتلاشى بعد فترة قصيرة"
+        },
+        {
+          "id": "a3",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q42",
+      "categoryId": "fuelIgnition",
+      "type": "single_choice",
+      "title": "انسداد فلتر الهواء ومصافي الوقود وتلف البخاخات يؤدي إلى:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "هدر في الوقود"
+        },
+        {
+          "id": "a2",
+          "text": "توفير في الوقود"
+        }
+      ],
+      "correctAnswerIds": [
+        "a1"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q43",
+      "categoryId": "fuelIgnition",
+      "type": "single_choice",
+      "title": "تلف أحد البخاخات أو أكثر أو توقف أحد البواجي أو أكثر يؤدي إلى:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "توقف المحرك عن العمل"
+        },
+        {
+          "id": "a2",
+          "text": "حدوث ارتجاج في عمل المحرك"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q44",
+      "categoryId": "fuelIgnition",
+      "type": "single_choice",
+      "title": "كمية الوقود اللازمة لتبريد مضخة الوقود الغاطسة في محركات البنزين يجب أن تكون:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "5 ليتر"
+        },
+        {
+          "id": "a2",
+          "text": "10 ليتر"
+        },
+        {
+          "id": "a3",
+          "text": "15 ليتر"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q45",
+      "categoryId": "fuelIgnition",
+      "type": "single_choice",
+      "title": "توقف المحرك مباشرة أثناء المسير يكون بسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "عدم وجود وقود"
+        },
+        {
+          "id": "a2",
+          "text": "توقف مضخة الوقود"
+        },
+        {
+          "id": "a3",
+          "text": "توقف البخاخات أو الحواقن"
+        },
+        {
+          "id": "a4",
+          "text": "عطل كهربائي"
+        },
+        {
+          "id": "a5",
+          "text": "عطل في حساس الكرنك"
+        },
+        {
+          "id": "a6",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a6"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q46",
+      "categoryId": "circuits",
+      "type": "single_choice",
+      "title": "الدارة المسؤولة عن تدوير الماء في المحرك وتخفيض درجة حرارته هي:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "دارة التبريد"
+        },
+        {
+          "id": "a2",
+          "text": "دارة التزييت"
+        },
+        {
+          "id": "a3",
+          "text": "دارة الإشعال"
+        },
+        {
+          "id": "a4",
+          "text": "دارة المقلع"
+        },
+        {
+          "id": "a5",
+          "text": "دارة الشحن"
+        },
+        {
+          "id": "a6",
+          "text": "دارة الوقود"
+        }
+      ],
+      "correctAnswerIds": [
+        "a1"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q47",
+      "categoryId": "circuits",
+      "type": "single_choice",
+      "title": "الدارة المسؤولة عن تأمين الشرارة إلى البوجية وتشغيل البخاخات هي:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "دارة التبريد"
+        },
+        {
+          "id": "a2",
+          "text": "دارة التزييت"
+        },
+        {
+          "id": "a3",
+          "text": "دارة الإشعال"
+        },
+        {
+          "id": "a4",
+          "text": "دارة المقلع"
+        },
+        {
+          "id": "a5",
+          "text": "دارة الشحن"
+        },
+        {
+          "id": "a6",
+          "text": "دارة الوقود"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q48",
+      "categoryId": "circuits",
+      "type": "single_choice",
+      "title": "تنظيف المحرك من الأوساخ ومنع التآكل والمساعدة في التبريد:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "دارة التبريد"
+        },
+        {
+          "id": "a2",
+          "text": "دارة التزييت"
+        },
+        {
+          "id": "a3",
+          "text": "دارة الإشعال"
+        },
+        {
+          "id": "a4",
+          "text": "دارة المقلع"
+        },
+        {
+          "id": "a5",
+          "text": "دارة الشحن"
+        },
+        {
+          "id": "a6",
+          "text": "دارة الوقود"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q49",
+      "categoryId": "circuits",
+      "type": "single_choice",
+      "title": "تأمين البنزين أو المازوت بشكل كافٍ للمحرك عند مختلف الظروف:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "دارة التبريد"
+        },
+        {
+          "id": "a2",
+          "text": "دارة التزييت"
+        },
+        {
+          "id": "a3",
+          "text": "دارة الإشعال"
+        },
+        {
+          "id": "a4",
+          "text": "دارة الوقود"
+        },
+        {
+          "id": "a5",
+          "text": "دارة الشحن"
+        },
+        {
+          "id": "a6",
+          "text": "دارة المقلع"
+        }
+      ],
+      "correctAnswerIds": [
+        "a4"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q50",
+      "categoryId": "circuits",
+      "type": "single_choice",
+      "title": "الدارة المسؤولة عن إبقاء البطارية مليئة بالكهرباء هي:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "دارة التبريد"
+        },
+        {
+          "id": "a2",
+          "text": "دارة التزييت"
+        },
+        {
+          "id": "a3",
+          "text": "دارة الإشعال"
+        },
+        {
+          "id": "a4",
+          "text": "دارة الوقود"
+        },
+        {
+          "id": "a5",
+          "text": "دارة الشحن"
+        },
+        {
+          "id": "a6",
+          "text": "دارة المقلع"
+        }
+      ],
+      "correctAnswerIds": [
+        "a5"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q51",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "يكون لون عدسة البطارية أسود أو أحمر إذا كانت البطارية:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "جيدة ومشحونة"
+        },
+        {
+          "id": "a2",
+          "text": "فارغة وبحاجة إلى شحن"
+        },
+        {
+          "id": "a3",
+          "text": "صلاحية البطارية منتهية وبحاجة إلى تبديل"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q52",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "يكون لون عدسة البطارية أخضر إذا كانت البطارية:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "جيدة ومشحونة"
+        },
+        {
+          "id": "a2",
+          "text": "فارغة وبحاجة إلى شحن"
+        },
+        {
+          "id": "a3",
+          "text": "صلاحية البطارية منتهية وبحاجة إلى تبديل"
+        }
+      ],
+      "correctAnswerIds": [
+        "a1"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q53",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "يكون لون عدسة البطارية أبيض إذا كانت البطارية:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "جيدة ومشحونة"
+        },
+        {
+          "id": "a2",
+          "text": "فارغة وبحاجة إلى شحن"
+        },
+        {
+          "id": "a3",
+          "text": "صلاحية البطارية منتهية وبحاجة إلى تبديل"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q54",
+      "categoryId": "batteryElectric",
+      "type": "true_false",
+      "title": "المدخرة تغذي كافة الدارات والأجهزة الكهربائية بتيار مستمر 12 فولط.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q55",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "قطب المدخرة (البطارية) الذي لونه أحمر وثخين ويوصل مع الأجهزة الكهربائية هو:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "القطب السالب"
+        },
+        {
+          "id": "a2",
+          "text": "القطب الموجب"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q56",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "قطب المدخرة (البطارية) الذي لونه أسود أو أزرق ورفيع ويوصل مع حديد السيارة (الشاسية) هو:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "القطب السالب"
+        },
+        {
+          "id": "a2",
+          "text": "القطب الموجب"
+        }
+      ],
+      "correctAnswerIds": [
+        "a1"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q57",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "لكي نتجنب الأكسدة لأقطاب البطارية وتجنب الأعطال يجب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "الشد المحكم لرؤوس البطارية"
+        },
+        {
+          "id": "a2",
+          "text": "عزل رؤوس البطارية بالتشحيم"
+        },
+        {
+          "id": "a3",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q58",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "ارتخاء الأقطاب للبطارية هو سبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "ضعف الشحن"
+        },
+        {
+          "id": "a2",
+          "text": "تآكل الأقطاب"
+        },
+        {
+          "id": "a3",
+          "text": "حصول شرارة كهربائية"
+        },
+        {
+          "id": "a4",
+          "text": "أعطال بالأجهزة الكهربائية"
+        },
+        {
+          "id": "a5",
+          "text": "صعوبة التدوير"
+        },
+        {
+          "id": "a6",
+          "text": "فصل الكهرباء"
+        },
+        {
+          "id": "a7",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a7"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q59",
+      "categoryId": "batteryElectric",
+      "type": "true_false",
+      "title": "لفصل البطارية يجب إيقاف السيارة وفصل القطب السالب أولاً ثم القطب الموجب.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q60",
+      "categoryId": "batteryElectric",
+      "type": "true_false",
+      "title": "لوصل البطارية يجب وصل القطب السالب أولاً ثم القطب الموجب.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q61",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "في حال تشباية البطاريات نصل القطب الموجب مع الموجب ثم نصل القطب السالب بإحكام ونترك المركبة الأخرى شغالة، وعند دوران مركبتك نترك الأقطاب موصولة لمدة:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "1 دقيقة"
+        },
+        {
+          "id": "a2",
+          "text": "2 دقيقة"
+        },
+        {
+          "id": "a3",
+          "text": "5 دقيقة"
+        },
+        {
+          "id": "a4",
+          "text": "كل ما سبق خاطئ"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q62",
+      "categoryId": "batteryElectric",
+      "type": "true_false",
+      "title": "يمكن تركيب فيوز بقيمة أمبير أصغر ولكن بشكل مؤقت.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q63",
+      "categoryId": "batteryElectric",
+      "type": "true_false",
+      "title": "يسمح باستبدال الفيوز بآخر ذو أمبير أكبر ولكن بشكل مؤقت.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q64",
+      "categoryId": "batteryElectric",
+      "type": "true_false",
+      "title": "يسمح باستبدال الفيوز بسلك كهربائي (التجسير).",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q65",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "عند حدوث عطل بأي جزء كهربائي يجب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "التأكد من الفيوز أولاً"
+        },
+        {
+          "id": "a2",
+          "text": "التأكد من القطعة أو مشغلها"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q66",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "سماع صوت تكتكة وعدم استجابة المقلع (المرش) لتدوير المحرك يكون بسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "ضعف المدخرة (البطارية) أو انتهاء عمرها الافتراضي"
+        },
+        {
+          "id": "a2",
+          "text": "عطل بالدينامو وتوقفه عن الشحن"
+        },
+        {
+          "id": "a3",
+          "text": "ارتخاء رؤوس البطارية أو أكسدتها"
+        },
+        {
+          "id": "a4",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a4"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q67",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "عند تشغيل المركبة وسماع صوت تكسير أو تزحيط أو (جظة) يكون بسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تآكل بأحد أسنان المرش أو الفولان"
+        },
+        {
+          "id": "a2",
+          "text": "ارتخاء براغي تثبيت المرش"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q68",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "عند صعوبة التشغيل الصباحي في محركات الديزل يجب التأكد من:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "عمل الحمايات حيث تضيء إشارة الحمايات على التابلو لمدة 5 - 10 ثواني ثم تنطفئ"
+        },
+        {
+          "id": "a2",
+          "text": "التأكد من شمعات الإشتعال"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "a1"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q69",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "ضعف البطارية وتآكل فحمات المرش تسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "دوران سريع للمحرك"
+        },
+        {
+          "id": "a2",
+          "text": "دوران بطيء (هزيل) للمحرك"
+        }
+      ],
+      "correctAnswerIds": [
+        "a2"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "q70",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "الأسباب التي تؤدي إلى ضعف البطارية:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تعب وضعف الدينامو"
+        },
+        {
+          "id": "a2",
+          "text": "ارتخاء قشاط الدينامو"
+        },
+        {
+          "id": "a3",
+          "text": "ارتخاء في رؤوس البطارية"
+        },
+        {
+          "id": "a4",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a4"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q71",
+      "categoryId": "batteryElectric",
+      "type": "true_false",
+      "title": "عند إنارة ضوء الدينامو على التابلو (زر بطارية أحمر) دليل على امتلاء البطارية، يجب تشغيل جميع الأجهزة الكهربائية لتفريغها.",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q72",
+      "categoryId": "batteryElectric",
+      "type": "single_choice",
+      "title": "انقطاع القشاط الرئيسي لتشغيل المضخات والدينمو يكون سبباً في اشتغال زر الدينامو وسبباً في:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "ثقل في حركة المقود لتوقف مضخة الهيروليك"
+        },
+        {
+          "id": "a2",
+          "text": "ثقل في الفرامل"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a1"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q73",
+      "categoryId": "transmission",
+      "type": "single_choice",
+      "title": "عند الضغط على دعسة الدبرياج وتبديل السرعة وسماع صوت (جظة) يكون بسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تعيير مسافة الدعسة الحرة للدبرياج غير صحيح"
+        },
+        {
+          "id": "a2",
+          "text": "عطل في إحدى مضخات الدبرياج"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q74",
+      "categoryId": "transmission",
+      "type": "single_choice",
+      "title": "وجود فراغ في ساعد تبديل السرعة (الفيتيس) يكون بسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تلف في جلود الساعد"
+        },
+        {
+          "id": "a2",
+          "text": "انقطاع أحد الأكبال لناقل الحركة"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        },
+        {
+          "id": "a4",
+          "text": "كلاهما خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q75",
+      "categoryId": "transmission",
+      "type": "single_choice",
+      "title": "عند تغيير السرعة وملاحظة ارتجاج أو تنتير في المركبة دليل على:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تلف أحد أجزاء الدبرياج (دسك - مراية - فحمة)"
+        },
+        {
+          "id": "a2",
+          "text": "توقف أحد البواجي أو البخاخات عن العمل"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        },
+        {
+          "id": "a4",
+          "text": "كلاهما خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "hard"
+    },
+    {
+      "id": "q76",
+      "categoryId": "transmission",
+      "type": "single_choice",
+      "title": "سماع صوت خفيف (حنة أو ونة) أثناء المسير دليل على:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تآكل مسننات الديفرنسيه"
+        },
+        {
+          "id": "a2",
+          "text": "نقص في زيت الديفرنسيه"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q77",
+      "categoryId": "transmission",
+      "type": "single_choice",
+      "title": "سماع صوت خشن (طقطقة) ناتجة عن الترازمسيون يكون ناتجاً عن:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "تلف في حامل الترازمسيون"
+        },
+        {
+          "id": "a2",
+          "text": "فراغ في التربيعات الواصلة"
+        },
+        {
+          "id": "a3",
+          "text": "كل ما سبق صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "q78",
+      "categoryId": "transmission",
+      "type": "single_choice",
+      "title": "اعوجاج الترسمسيون يسبب:",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "ارتجاج في المركبة"
+        },
+        {
+          "id": "a2",
+          "text": "سماع صوت حفة أثناء الحركة"
+        },
+        {
+          "id": "a3",
+          "text": "كلاهما صحيح"
+        }
+      ],
+      "correctAnswerIds": [
+        "a3"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "id": "ts01",
+      "categoryId": "trafficSigns",
+      "type": "single_choice",
+      "title": "ماذا تعني هذه الإشارة؟",
+      "image": "images/sign_stop.png",
+      "answers": [
+        {
+          "id": "a",
+          "text": "قف تماماً ثم تابع عند الأمان"
+        },
+        {
+          "id": "b",
+          "text": "افسح الطريق دون توقف"
+        },
+        {
+          "id": "c",
+          "text": "ممنوع الدخول"
+        },
+        {
+          "id": "d",
+          "text": "حد أقصى للسرعة 60"
+        }
+      ],
+      "correctAnswerIds": [
+        "a"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "ts02",
+      "categoryId": "trafficSigns",
+      "type": "single_choice",
+      "title": "ماذا تعني هذه الإشارة؟",
+      "image": "images/sign_yield.png",
+      "answers": [
+        {
+          "id": "a",
+          "text": "قف تماماً"
+        },
+        {
+          "id": "b",
+          "text": "افسح الطريق / أعط الأفضلية"
+        },
+        {
+          "id": "c",
+          "text": "ممنوع الالتفاف"
+        },
+        {
+          "id": "d",
+          "text": "طريق سريع"
+        }
+      ],
+      "correctAnswerIds": [
+        "b"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "ts03",
+      "categoryId": "trafficSigns",
+      "type": "true_false",
+      "title": "هذه الإشارة تعني ممنوع الدخول من هذا الاتجاه.",
+      "image": "images/sign_no_entry.png",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "true"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "ts04",
+      "categoryId": "trafficSigns",
+      "type": "single_choice",
+      "title": "ما الحد الأقصى للسرعة الذي تشير إليه هذه اللوحة؟",
+      "image": "images/sign_speed_60.png",
+      "answers": [
+        {
+          "id": "a",
+          "text": "40 كم/س"
+        },
+        {
+          "id": "b",
+          "text": "50 كم/س"
+        },
+        {
+          "id": "c",
+          "text": "60 كم/س"
+        },
+        {
+          "id": "d",
+          "text": "80 كم/س"
+        }
+      ],
+      "correctAnswerIds": [
+        "c"
+      ],
+      "difficulty": "easy"
+    },
+    {
+      "id": "ts05",
+      "categoryId": "trafficSigns",
+      "type": "true_false",
+      "title": "هذه الإشارة تسمح بالالتفاف للخلف (U-turn).",
+      "image": "images/sign_no_u_turn.png",
+      "answers": [
+        {
+          "id": "true",
+          "text": "صح"
+        },
+        {
+          "id": "false",
+          "text": "خطأ"
+        }
+      ],
+      "correctAnswerIds": [
+        "false"
+      ],
+      "difficulty": "easy"
+    }
+  ]
+}
