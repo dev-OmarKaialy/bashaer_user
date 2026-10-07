@@ -94,6 +94,7 @@ class MistakesScreen extends StatelessWidget {
                     icon: Icons.replay_rounded,
                     gradient: AppTheme.dangerGradient,
                     shine: true,
+                    fullWidth: true,
                     onPressed: () =>
                         _practice(context, missedQuestions.map((m) => m.question).toList()),
                   ),

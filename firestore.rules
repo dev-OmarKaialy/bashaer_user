@@ -12,6 +12,13 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Subscription plans (monthly price + benefits) are written by the admin
+    // console and read by the subscribe screen.
+    match /subscription_plans/{planId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // License rows are keyed by deviceId. Students may only create their own
     // pending row (isActive: false) and read back that row. Approving / editing
     // stays in the admin console (Firebase Auth is not used by the app).

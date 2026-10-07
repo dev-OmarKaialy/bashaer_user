@@ -4,21 +4,24 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constants/assets.dart';
 import '../../../../core/constants/lottie_assets.dart';
 import '../../../../core/services/dependencies.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/request_status.dart';
 import '../../../../core/widgets/race/app_lottie.dart';
 import '../../../../core/widgets/race/entrance.dart';
+import '../../../../core/widgets/race/motion_loop.dart';
 import '../../../../core/widgets/race/race_button.dart';
 import '../../../../core/widgets/race/road_progress_bar.dart';
 import '../../../../core/widgets/race/speed_lines_background.dart';
-import '../../../license/presentation/pages/license_gate_screen.dart';
+import '../../../onboarding/presentation/pages/entry_screen.dart';
 import '../bloc/bootstrap_bloc.dart';
 import '../bloc/bootstrap_event.dart';
 import '../bloc/bootstrap_state.dart';
 
-/// First frame after cold start: syncs the question bank, then opens home.
+/// First frame after cold start: syncs the question bank, then hands over to the
+/// entry router (intro, free trial, or the subscription check).
 class BootstrapScreen extends StatelessWidget {
   const BootstrapScreen({super.key});
 
@@ -42,7 +45,7 @@ class _BootstrapView extends StatelessWidget {
       listener: (context, state) {
         Navigator.of(context).pushReplacement(
           PageRouteBuilder<void>(
-            pageBuilder: (context, animation, secondaryAnimation) => const LicenseGateScreen(),
+            pageBuilder: (context, animation, secondaryAnimation) => const EntryScreen(),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(opacity: animation, child: child);
             },
@@ -98,14 +101,19 @@ class _BootstrapLoading extends StatelessWidget {
       children: [
         const Spacer(flex: 2),
         const Entrance(child: _BrandMark()),
-        SizedBox(height: 28.h),
+        SizedBox(height: 20.h),
         Entrance(
           index: 1,
           scale: true,
-          child: AppLottie(
-            asset: LottieAssets.driving,
-            size: 220.r,
-            semanticLabel: 'bootstrap.loading'.tr(),
+          child: MotionLoop(
+            offset: Offset(0, 8.h),
+            scale: 1.03,
+            duration: const Duration(milliseconds: 3200),
+            child: AppLottie(
+              asset: LottieAssets.driving,
+              size: 200.r,
+              semanticLabel: 'bootstrap.loading'.tr(),
+            ),
           ),
         ),
         SizedBox(height: 12.h),
@@ -206,23 +214,27 @@ class _BrandMark extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: 88.r,
-          height: 88.r,
-          decoration: BoxDecoration(
-            color: AppTheme.onPrimaryColor.withValues(alpha: 0.16),
-            shape: BoxShape.circle,
-            boxShadow: AppTheme.glowShadow(AppTheme.signalYellow, strength: 0.55),
-            border: Border.all(color: AppTheme.onPrimaryColor.withValues(alpha: 0.35), width: 2),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Image.asset(
-            'assets/icons/launcher_icon.png',
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Icon(
-              Icons.directions_car_filled_rounded,
-              size: 44.r,
-              color: AppTheme.onPrimaryColor,
+        MotionLoop(
+          scale: 1.06,
+          duration: const Duration(milliseconds: 3000),
+          child: Container(
+            width: 96.r,
+            height: 96.r,
+            decoration: BoxDecoration(
+              color: AppTheme.onPrimaryColor.withValues(alpha: 0.16),
+              shape: BoxShape.circle,
+              boxShadow: AppTheme.glowShadow(AppTheme.signalYellow, strength: 0.55),
+              border: Border.all(color: AppTheme.onPrimaryColor.withValues(alpha: 0.35), width: 2),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Image.asset(
+              Assets.assetsIconsLauncherIcon,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.directions_car_filled_rounded,
+                size: 44.r,
+                color: AppTheme.onPrimaryColor,
+              ),
             ),
           ),
         ),

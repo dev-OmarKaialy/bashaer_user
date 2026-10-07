@@ -12,6 +12,7 @@ Firestore directly.
 | `categories` | `{slug}` — the slug **is** the id | admin app |
 | `questions` | `{qid}` — e.g. `q12` | admin app |
 | `licenses` | `{deviceId}` | admin app |
+| `subscription_plans` | `{planId}` — e.g. `monthly` | admin console (single public doc) |
 
 Natural-key ids mean a category rename does not orphan questions: only `slug`
 is the link, and it is immutable once created (the slug field is hidden when
@@ -130,6 +131,24 @@ app must therefore:
 If you would rather have the admin block deletion of a non-empty category, that
 is a change to `DeleteContentCategoryUsecase` — say the word and it is a small
 edit.
+
+## Subscription plans (public read)
+
+The users app shows the monthly price and benefits on the subscribe screen. One
+document per plan, read-only from the app, written by the admin console. Create
+`subscription_plans/monthly`:
+
+| Field | Type | Notes |
+|---|---|---|
+| `planId` | string | matches the document id, e.g. `"monthly"` |
+| `title` | string | e.g. `"اشتراك شهري"` / `"Monthly subscription"` |
+| `price` | number | monthly price in `currency` |
+| `currency` | string | ISO code, e.g. `"USD"` |
+| `features` | array | short strings shown as benefits (optional; a missing/empty list hides the benefits section) |
+| `updatedAt` | timestamp | informational, not read by the app |
+
+The app caches the last fetched plan in secure storage so the price still shows
+offline. The Firestore rules allow `read` for everyone and deny `write`.
 
 ## Suggested read path for the users app
 

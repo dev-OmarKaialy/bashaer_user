@@ -24,7 +24,17 @@ import 'quiz_network_image.dart';
 /// The finish line after submitting a practice or an exam session: score
 /// gauge, pass/fail verdict with celebration, and a review of every question.
 class QuizResultView extends StatelessWidget {
-  const QuizResultView({super.key});
+  const QuizResultView({super.key, this.onFinished, this.finishLabel, this.finishIcon});
+
+  /// When set, the second action calls this instead of popping back to the
+  /// first route — used by the free trial to continue into the subscribe
+  /// screen.
+  final VoidCallback? onFinished;
+
+  /// Label for that second action. Defaults to the localized "home" wording.
+  final String? finishLabel;
+
+  final IconData? finishIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -88,11 +98,13 @@ class QuizResultView extends StatelessWidget {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: RaceButton(
-                        label: 'result.home'.tr(),
-                        icon: Icons.home_rounded,
+                        label: finishLabel ?? 'result.home'.tr(),
+                        icon: finishIcon ?? Icons.home_rounded,
                         variant: RaceButtonVariant.outline,
                         gradient: AppTheme.grapeGradient,
-                        onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                        onPressed:
+                            onFinished ??
+                            () => Navigator.of(context).popUntil((route) => route.isFirst),
                       ),
                     ),
                   ],

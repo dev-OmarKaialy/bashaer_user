@@ -79,6 +79,7 @@ class BookmarksScreen extends StatelessWidget {
                     icon: Icons.play_arrow_rounded,
                     gradient: AppTheme.goldGradient,
                     shine: true,
+                    fullWidth: true,
                     onPressed: () => _practice(context, bookmarked),
                   ),
                 );

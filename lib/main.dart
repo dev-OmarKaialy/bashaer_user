@@ -20,8 +20,8 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   // Boxes must be open before DI so datasources can read them synchronously.
-  await initHive();
-  await initFirebase();
+  // Hive and Firebase are independent; warm them together.
+  await Future.wait<void>([initHive(), initFirebase()]);
 
   configureDependencies();
 

@@ -365,12 +365,14 @@ class _LoadErrorBanner extends StatelessWidget {
                       ).textTheme.titleMedium?.copyWith(color: AppTheme.dangerColor),
                     ),
                   ),
-                  RaceButton(
-                    label: 'home.retry'.tr(),
-                    icon: Icons.refresh_rounded,
-                    gradient: AppTheme.dangerGradient,
-                    dense: true,
-                    onPressed: () => context.read<ProgressBloc>().add(const LoadProgressEvent()),
+                  Flexible(
+                    child: RaceButton(
+                      label: 'home.retry'.tr(),
+                      icon: Icons.refresh_rounded,
+                      gradient: AppTheme.dangerGradient,
+                      dense: true,
+                      onPressed: () => context.read<ProgressBloc>().add(const LoadProgressEvent()),
+                    ),
                   ),
                 ],
               ),

@@ -19,6 +19,8 @@ class RaceButton extends StatelessWidget {
     this.variant = RaceButtonVariant.filled,
     this.shine = false,
     this.dense = false,
+    this.fullWidth = false,
+    this.loading = false,
   });
 
   final String label;
@@ -29,20 +31,33 @@ class RaceButton extends StatelessWidget {
   final bool shine;
   final bool dense;
 
+  /// Stretch to the incoming width constraint. Use it for call-to-action rows
+  /// laid out in a centred column, which otherwise shrink-wraps the pill.
+  final bool fullWidth;
+
+  /// Shows a spinner in place of [icon] and keeps the pill looking "busy"
+  /// while work is in flight. Taps are blocked for as long as it is true.
+  final bool loading;
+
   @override
   Widget build(BuildContext context) {
-    final enabled = onPressed != null;
+    final hasHandler = onPressed != null;
+    final busy = loading;
+    final enabled = hasHandler && !loading;
     final baseColor = gradient.colors.first;
     final isFilled = variant == RaceButtonVariant.filled;
-    final foreground = !enabled
-        ? AppTheme.inkFaint
+    // Disabled text must stay readable on the pale disabled fill; a busy pill
+    // keeps the same foreground as an enabled one, because it keeps its color.
+    final foreground = !enabled && !busy
+        ? AppTheme.inkSoft
         : isFilled
         ? AppTheme.onPrimaryColor
         : baseColor;
 
+    // A busy pill keeps its gradient so it reads as "working", not "off".
     final decoration = BoxDecoration(
-      gradient: enabled && isFilled ? gradient : null,
-      color: !enabled
+      gradient: enabled || busy ? (isFilled ? gradient : null) : null,
+      color: !enabled && !busy
           ? AppTheme.mutedSurface
           : variant == RaceButtonVariant.soft
           ? baseColor.withValues(alpha: 0.12)
@@ -53,39 +68,67 @@ class RaceButton extends StatelessWidget {
       border: variant == RaceButtonVariant.outline && enabled
           ? Border.all(color: baseColor.withValues(alpha: 0.5), width: 1.5)
           : null,
-      boxShadow: enabled && isFilled ? AppTheme.glowShadow(baseColor, strength: 0.7) : null,
+      boxShadow: (enabled || busy) && isFilled
+          ? AppTheme.glowShadow(baseColor, strength: enabled ? 0.7 : 0.35)
+          : null,
     );
 
+    // Scale the label down in tight slots (quiz footer, long Arabic CTAs) instead
+    // of letting the Row paint yellow overflow stripes. Skip Flexible when the
+    // incoming width is unbounded (e.g. nested in a Row without Expanded).
     Widget content = ConstrainedBox(
       constraints: BoxConstraints(minHeight: dense ? 42.h : 54.h),
       child: DecoratedBox(
         decoration: decoration,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: dense ? 14.w : 20.w, vertical: 8.h),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, color: foreground, size: dense ? 18.r : 22.r),
-                SizedBox(width: 8.w),
-              ],
-              Flexible(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final labelText = FittedBox(
+                fit: BoxFit.scaleDown,
                 child: Text(
                   label,
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: foreground,
                     fontSize: dense ? 13.sp : 16.sp,
                   ),
                 ),
-              ),
-            ],
+              );
+              final leading = <Widget>[
+                if (busy)
+                  SizedBox(
+                    width: (dense ? 18.r : 22.r),
+                    height: (dense ? 18.r : 22.r),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.4,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        isFilled ? AppTheme.onPrimaryColor : baseColor,
+                      ),
+                    ),
+                  )
+                else if (icon != null)
+                  Icon(icon, color: foreground, size: dense ? 18.r : 22.r),
+                if (busy || icon != null) SizedBox(width: 8.w),
+              ];
+              return Row(
+                mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...leading,
+                  if (constraints.maxWidth.isFinite) Flexible(child: labelText) else labelText,
+                ],
+              );
+            },
           ),
         ),
       ),
     );
+
+    if (fullWidth) {
+      content = SizedBox(width: double.infinity, child: content);
+    }
 
     if (shine && enabled && isFilled && !MediaQuery.disableAnimationsOf(context)) {
       content = content
@@ -97,7 +140,11 @@ class RaceButton extends StatelessWidget {
           );
     }
 
-    return Pressable(onTap: onPressed, semanticLabel: label, child: content);
+    return Pressable(
+      onTap: enabled ? onPressed : null,
+      semanticLabel: busy ? '$label…' : label,
+      child: content,
+    );
   }
 }
 

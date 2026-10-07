@@ -4,21 +4,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constants/lottie_assets.dart';
 import '../../../../core/services/dependencies.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/request_status.dart';
 import '../../../../core/utils/toaster.dart';
+import '../../../../core/widgets/race/app_lottie.dart';
 import '../../../../core/widgets/race/entrance.dart';
+import '../../../../core/widgets/race/motion_loop.dart';
 import '../../../../core/widgets/race/race_button.dart';
 import '../../../../core/widgets/race/race_card.dart';
 import '../../../../core/widgets/race/race_loader.dart';
 import '../../../../core/widgets/race/speed_lines_background.dart';
+import '../../../onboarding/presentation/cubit/onboarding_cubit.dart';
+import '../../../onboarding/presentation/pages/onboarding_screen.dart';
 import '../../../quiz/presentation/pages/home_screen.dart';
+import '../../../subscription/presentation/pages/subscribe_screen.dart';
 import '../../data/models/license_error_codes.dart';
 import '../cubit/license_cubit.dart';
 import '../cubit/license_state.dart';
 
-/// After bank sync: validates license by device id, then opens home.
+/// Validates license by device id, then opens home. Unlicensed devices can
+/// open Subscribe or restart the intro + free trial.
 class LicenseGateScreen extends StatelessWidget {
   const LicenseGateScreen({super.key});
 
@@ -87,6 +94,16 @@ class _LicenseGateView extends StatelessWidget {
 class PendingLicensePanel extends StatelessWidget {
   const PendingLicensePanel({super.key});
 
+  Future<void> _restartIntroAndTrial(BuildContext context) async {
+    final cubit = getIt<OnboardingCubit>();
+    await cubit.resetFunnel();
+    if (!context.mounted) return;
+    await Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute<void>(builder: (_) => const OnboardingScreen()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LicenseCubit, LicenseState>(
@@ -105,19 +122,25 @@ class PendingLicensePanel extends StatelessWidget {
             state.errorCode == LicenseErrorCodes.invalid;
 
         return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 24.h),
               Entrance(
-                child: Icon(
-                  Icons.phonelink_lock_rounded,
-                  size: 64.r,
-                  color: AppTheme.onPrimaryColor,
+                scale: true,
+                child: Center(
+                  child: MotionLoop(
+                    scale: 1.06,
+                    duration: const Duration(milliseconds: 3000),
+                    child: AppLottie(
+                      asset: LottieAssets.premium,
+                      size: 120.r,
+                      semanticLabel: 'license.title'.tr(),
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 8.h),
               Entrance(
                 index: 1,
                 child: Text(
@@ -140,11 +163,12 @@ class PendingLicensePanel extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 28.h),
+              SizedBox(height: 22.h),
               Entrance(
                 index: 3,
                 child: RaceCard(
                   padding: EdgeInsets.all(16.r),
+                  borderColor: AppTheme.signalYellow.withValues(alpha: 0.28),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -167,6 +191,7 @@ class PendingLicensePanel extends StatelessWidget {
                         icon: Icons.copy_rounded,
                         gradient: AppTheme.sunsetGradient,
                         shine: true,
+                        fullWidth: true,
                         onPressed: loading
                             ? null
                             : () async {
@@ -188,9 +213,31 @@ class PendingLicensePanel extends StatelessWidget {
                       RaceButton(
                         label: loading ? 'license.checking'.tr() : 'license.retry'.tr(),
                         icon: Icons.refresh_rounded,
+                        fullWidth: true,
                         onPressed: loading
                             ? null
                             : () => context.read<LicenseCubit>().checkSession(),
+                      ),
+                      SizedBox(height: 10.h),
+                      RaceButton(
+                        label: 'license.openSubscribe'.tr(),
+                        icon: Icons.workspace_premium_rounded,
+                        gradient: AppTheme.limeGradient,
+                        fullWidth: true,
+                        onPressed: loading
+                            ? null
+                            : () => Navigator.of(context).push(
+                                MaterialPageRoute<void>(builder: (_) => const SubscribeScreen()),
+                              ),
+                      ),
+                      SizedBox(height: 10.h),
+                      RaceButton(
+                        label: 'license.restartTrial'.tr(),
+                        icon: Icons.replay_rounded,
+                        variant: RaceButtonVariant.outline,
+                        gradient: AppTheme.grapeGradient,
+                        fullWidth: true,
+                        onPressed: loading ? null : () => _restartIntroAndTrial(context),
                       ),
                     ],
                   ),

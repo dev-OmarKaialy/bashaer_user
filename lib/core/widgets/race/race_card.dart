@@ -108,13 +108,14 @@ class RaceTag extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[Icon(icon, size: 14.r, color: color), SizedBox(width: 4.w)],
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color),
-              ),
+            // No Flexible: this tag is shrink-wrapped and often sits in a Row
+            // that passes unbounded width, where Flexible would assert.
+            Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color),
             ),
           ],
         ),

@@ -42,12 +42,28 @@ class QuizScreen extends StatelessWidget {
     required this.mode,
     this.examTimeSeconds,
     this.title,
+    this.allowExit = true,
+    this.onFinished,
+    this.finishLabel,
+    this.finishIcon,
   });
 
   final List<QuestionModel> questions;
   final QuizMode mode;
   final int? examTimeSeconds;
   final String? title;
+
+  /// When false the app bar drops the close button, so a session the student
+  /// has to finish (the free trial) cannot be abandoned half way.
+  final bool allowExit;
+
+  /// Called when the result view's second action is tapped, instead of popping
+  /// back to the first route. Null keeps the default behaviour.
+  final VoidCallback? onFinished;
+
+  /// Label and icon for that action, for flows that continue somewhere else.
+  final String? finishLabel;
+  final IconData? finishIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -66,17 +82,36 @@ class QuizScreen extends StatelessWidget {
           );
           return bloc;
         },
-        child: QuizScreenBody(examTimeSeconds: examTimeSeconds ?? 0, title: title),
+        child: QuizScreenBody(
+          examTimeSeconds: examTimeSeconds ?? 0,
+          title: title,
+          allowExit: allowExit,
+          onFinished: onFinished,
+          finishLabel: finishLabel,
+          finishIcon: finishIcon,
+        ),
       ),
     );
   }
 }
 
 class QuizScreenBody extends StatefulWidget {
-  const QuizScreenBody({super.key, required this.examTimeSeconds, this.title});
+  const QuizScreenBody({
+    super.key,
+    required this.examTimeSeconds,
+    this.title,
+    this.allowExit = true,
+    this.onFinished,
+    this.finishLabel,
+    this.finishIcon,
+  });
 
   final int examTimeSeconds;
   final String? title;
+  final bool allowExit;
+  final VoidCallback? onFinished;
+  final String? finishLabel;
+  final IconData? finishIcon;
 
   @override
   State<QuizScreenBody> createState() => _QuizScreenBodyState();
@@ -162,17 +197,20 @@ class _QuizScreenBodyState extends State<QuizScreenBody> {
                   prev.examTitle != curr.examTitle ||
                   prev.phase != curr.phase,
               builder: (context, state) => RaceAppBar(
+                showBack: widget.allowExit,
                 title: state.isExam
                     ? (state.examTitle ?? 'exam.title'.tr())
                     : (widget.title ?? 'quiz.practice'.tr()),
-                leading: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 12),
-                  child: RaceIconButton(
-                    icon: Icons.close_rounded,
-                    tooltip: 'quiz.close'.tr(),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
+                leading: widget.allowExit
+                    ? Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 12),
+                        child: RaceIconButton(
+                          icon: Icons.close_rounded,
+                          tooltip: 'quiz.close'.tr(),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      )
+                    : null,
                 actions: [
                   if (state.isExam) ...[const QuizTimer(), SizedBox(width: 4.w)],
                   if (state.phase == QuizPhase.answering) ...[
@@ -193,7 +231,12 @@ class _QuizScreenBodyState extends State<QuizScreenBody> {
               duration: AppTheme.animationNormal,
               child: switch (state.phase) {
                 QuizPhase.loading => const RaceLoader(key: ValueKey('loading')),
-                QuizPhase.results => const QuizResultView(key: ValueKey('results')),
+                QuizPhase.results => QuizResultView(
+                  key: const ValueKey('results'),
+                  onFinished: widget.onFinished,
+                  finishLabel: widget.finishLabel,
+                  finishIcon: widget.finishIcon,
+                ),
                 QuizPhase.answering => const _AnsweringLayout(key: ValueKey('answering')),
               },
             ),

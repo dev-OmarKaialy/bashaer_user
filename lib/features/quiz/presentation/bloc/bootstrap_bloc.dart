@@ -27,7 +27,7 @@ class BootstrapBloc extends Bloc<BootstrapEvent, BootstrapState> {
   final SyncQuestionBankUsecase _syncQuestionBank;
 
   /// Floor for how long the splash stays visible, even when sync is instant.
-  static const minDisplayDuration = Duration(milliseconds: 2800);
+  static const minDisplayDuration = Duration(milliseconds: 1200);
 
   /// How often the bar is advanced while waiting.
   static const _tick = Duration(milliseconds: 50);
@@ -39,7 +39,7 @@ class BootstrapBloc extends Bloc<BootstrapEvent, BootstrapState> {
   /// The bar animates each change over `AppTheme.animationSlow`; hold the
   /// splash that long after reaching 100% so the car visibly arrives before
   /// the screen is replaced.
-  static const _barSettleDuration = Duration(milliseconds: 600);
+  static const _barSettleDuration = Duration(milliseconds: 300);
 
   Future<void> _onSync(SyncBankEvent event, Emitter<BootstrapState> emit) async {
     if (state.status.isLoading) return;

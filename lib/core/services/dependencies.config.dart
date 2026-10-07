@@ -28,6 +28,22 @@ import '../../features/license/domain/repositories/license_repository.dart'
 import '../../features/license/domain/usecases/ensure_license_session_usecase.dart'
     as _i548;
 import '../../features/license/presentation/cubit/license_cubit.dart' as _i447;
+import '../../features/onboarding/data/datasources/onboarding_session_store.dart'
+    as _i516;
+import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart'
+    as _i452;
+import '../../features/onboarding/domain/repositories/onboarding_repository.dart'
+    as _i430;
+import '../../features/onboarding/domain/usecases/complete_free_trial_usecase.dart'
+    as _i1028;
+import '../../features/onboarding/domain/usecases/complete_onboarding_usecase.dart'
+    as _i360;
+import '../../features/onboarding/domain/usecases/get_onboarding_session_usecase.dart'
+    as _i388;
+import '../../features/onboarding/domain/usecases/reset_funnel_usecase.dart'
+    as _i243;
+import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
+    as _i807;
 import '../../features/quiz/data/datasources/listen_mode_settings.dart'
     as _i310;
 import '../../features/quiz/data/datasources/quiz_local_datasource.dart'
@@ -55,6 +71,8 @@ import '../../features/quiz/domain/usecases/get_categories_usecase.dart'
     as _i564;
 import '../../features/quiz/domain/usecases/get_results_usecase.dart' as _i912;
 import '../../features/quiz/domain/usecases/get_stats_usecase.dart' as _i454;
+import '../../features/quiz/domain/usecases/get_trial_questions_usecase.dart'
+    as _i221;
 import '../../features/quiz/domain/usecases/record_answer_usecase.dart'
     as _i694;
 import '../../features/quiz/domain/usecases/save_result_usecase.dart' as _i344;
@@ -65,6 +83,18 @@ import '../../features/quiz/domain/usecases/toggle_bookmark_usecase.dart'
 import '../../features/quiz/presentation/bloc/bootstrap_bloc.dart' as _i940;
 import '../../features/quiz/presentation/bloc/progress_bloc.dart' as _i567;
 import '../../features/quiz/presentation/bloc/quiz_bloc.dart' as _i505;
+import '../../features/subscription/data/datasources/subscription_plan_remote_datasource.dart'
+    as _i710;
+import '../../features/subscription/data/datasources/subscription_plan_store.dart'
+    as _i699;
+import '../../features/subscription/data/repositories/subscription_repository_impl.dart'
+    as _i331;
+import '../../features/subscription/domain/repositories/subscription_repository.dart'
+    as _i185;
+import '../../features/subscription/domain/usecases/get_monthly_plan_usecase.dart'
+    as _i807;
+import '../../features/subscription/presentation/cubit/subscription_cubit.dart'
+    as _i949;
 import '../unified_api/dio/api_client.dart' as _i357;
 import '../unified_api/dio/logger_interceptor.dart' as _i614;
 import '../unified_api/dio/register_module.dart' as _i305;
@@ -91,14 +121,44 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i862.LicenseRemoteDatasource>(
       () => _i862.LicenseRemoteDatasourceImpl(),
     );
+    gh.factory<_i710.SubscriptionPlanRemoteDatasource>(
+      () => _i710.SubscriptionPlanRemoteDatasourceImpl(),
+    );
     gh.lazySingleton<_i535.DeviceIdService>(
       () => _i535.DeviceIdService(gh<_i558.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i519.LicenseSessionStore>(
       () => _i519.LicenseSessionStore(gh<_i558.FlutterSecureStorage>()),
     );
+    gh.lazySingleton<_i516.OnboardingSessionStore>(
+      () => _i516.OnboardingSessionStore(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.lazySingleton<_i699.SubscriptionPlanStore>(
+      () => _i699.SubscriptionPlanStore(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.factory<_i430.OnboardingRepository>(
+      () => _i452.OnboardingRepositoryImpl(gh<_i516.OnboardingSessionStore>()),
+    );
     gh.factory<_i189.QuizRemoteDatasource>(
       () => _i189.QuizRemoteDatasourceImpl(),
+    );
+    gh.factory<_i185.SubscriptionRepository>(
+      () => _i331.SubscriptionRepositoryImpl(
+        gh<_i710.SubscriptionPlanRemoteDatasource>(),
+        gh<_i699.SubscriptionPlanStore>(),
+      ),
+    );
+    gh.lazySingleton<_i1028.CompleteFreeTrialUsecase>(
+      () => _i1028.CompleteFreeTrialUsecase(gh<_i430.OnboardingRepository>()),
+    );
+    gh.lazySingleton<_i360.CompleteOnboardingUsecase>(
+      () => _i360.CompleteOnboardingUsecase(gh<_i430.OnboardingRepository>()),
+    );
+    gh.lazySingleton<_i388.GetOnboardingSessionUsecase>(
+      () => _i388.GetOnboardingSessionUsecase(gh<_i430.OnboardingRepository>()),
+    );
+    gh.lazySingleton<_i243.ResetFunnelUsecase>(
+      () => _i243.ResetFunnelUsecase(gh<_i430.OnboardingRepository>()),
     );
     gh.factory<_i357.ApiClient>(
       () => _i357.ApiClient(
@@ -122,6 +182,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i541.QuizMediaCache>(
       () => _i541.QuizMediaCacheImpl(gh<_i324.HiveService>()),
     );
+    gh.lazySingleton<_i807.GetMonthlyPlanUsecase>(
+      () => _i807.GetMonthlyPlanUsecase(gh<_i185.SubscriptionRepository>()),
+    );
     gh.factory<_i681.LicenseRepository>(
       () => _i14.LicenseRepositoryImpl(
         gh<_i862.LicenseRemoteDatasource>(),
@@ -137,6 +200,9 @@ extension GetItInjectableX on _i174.GetIt {
         ensureSession: gh<_i548.EnsureLicenseSessionUsecase>(),
         repository: gh<_i681.LicenseRepository>(),
       ),
+    );
+    gh.factory<_i949.SubscriptionCubit>(
+      () => _i949.SubscriptionCubit(gh<_i807.GetMonthlyPlanUsecase>()),
     );
     gh.lazySingleton<_i169.QuizNarrator>(
       () => _i169.QuizNarrator(gh<_i541.QuizMediaCache>()),
@@ -184,6 +250,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i568.ToggleBookmarkUsecase>(
       () => _i568.ToggleBookmarkUsecase(gh<_i613.QuizRepository>()),
     );
+    gh.lazySingleton<_i221.GetTrialQuestionsUsecase>(
+      () => _i221.GetTrialQuestionsUsecase(gh<_i613.QuizRepository>()),
+    );
     gh.lazySingleton<_i567.ProgressBloc>(
       () => _i567.ProgressBloc(
         getCategories: gh<_i564.GetCategoriesUsecase>(),
@@ -205,6 +274,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i940.BootstrapBloc>(
       () => _i940.BootstrapBloc(
         syncQuestionBank: gh<_i415.SyncQuestionBankUsecase>(),
+      ),
+    );
+    gh.factory<_i807.OnboardingCubit>(
+      () => _i807.OnboardingCubit(
+        getSession: gh<_i388.GetOnboardingSessionUsecase>(),
+        completeOnboarding: gh<_i360.CompleteOnboardingUsecase>(),
+        completeFreeTrial: gh<_i1028.CompleteFreeTrialUsecase>(),
+        resetFunnel: gh<_i243.ResetFunnelUsecase>(),
+        getTrialQuestions: gh<_i221.GetTrialQuestionsUsecase>(),
       ),
     );
     return this;
