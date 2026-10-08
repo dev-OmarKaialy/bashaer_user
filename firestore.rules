@@ -2,31 +2,47 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Question bank: public reads (the student app syncs it to Hive).
+    // The admin app signs in with Firebase Auth; an admin is a user with an
+    // `admins/{uid}` document (created by hand in the console).
+    function isAdmin() {
+      return request.auth != null
+          && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Admin membership: a signed-in user may only check their own row.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Question bank: public reads (the student app syncs it to Hive); only the
+    // admin app writes.
     match /categories/{slug} {
       allow read: if true;
-      allow write: if false;
+      allow write: if isAdmin();
     }
     match /questions/{qid} {
       allow read: if true;
-      allow write: if false;
+      allow write: if isAdmin();
     }
 
     // Subscription plans (monthly price + benefits) are written by the admin
-    // console and read by the subscribe screen.
+    // app and read by the subscribe screen.
     match /subscription_plans/{planId} {
       allow read: if true;
-      allow write: if false;
+      allow write: if isAdmin();
     }
 
     // License rows are keyed by deviceId. Students may only create their own
-    // pending row (isActive: false) and read back that row. Approving / editing
-    // stays in the admin console (Firebase Auth is not used by the app).
+    // pending row (isActive: false, no activeUntil) and read back that row.
+    // Listing, approving and editing are admin-only.
     match /licenses/{deviceId} {
       allow get: if true;
-      allow create: if request.resource.data.deviceId == deviceId
-          && request.resource.data.isActive == false;
-      allow update, delete: if false;
+      allow list, update, delete: if isAdmin();
+      allow create: if isAdmin()
+          || (request.resource.data.deviceId == deviceId
+              && request.resource.data.isActive == false
+              && !('activeUntil' in request.resource.data));
     }
   }
 }
