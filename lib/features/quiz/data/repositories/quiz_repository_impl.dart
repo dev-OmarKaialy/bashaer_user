@@ -12,6 +12,7 @@ import '../../data/datasources/quiz_remote_datasource.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_result_model.dart';
+import '../../data/models/training_session_model.dart';
 import '../../domain/repositories/quiz_repository.dart';
 
 @Injectable(as: QuizRepository)
@@ -143,6 +144,31 @@ class QuizRepositoryImpl with HandlingException implements QuizRepository {
   @override
   Future<Either<Failure, void>> saveResult(QuizResultModel result) {
     return wrapHandling(tryCall: () => _localDatasource.saveResult(result));
+  }
+
+  @override
+  Future<Either<Failure, TrainingSessionModel?>> getActiveSession() {
+    return wrapHandling(tryCall: () => _localDatasource.getActiveSession());
+  }
+
+  @override
+  Future<Either<Failure, void>> saveActiveSession(TrainingSessionModel session) {
+    return wrapHandling(tryCall: () => _localDatasource.saveActiveSession(session));
+  }
+
+  @override
+  Future<Either<Failure, void>> clearActiveSession() {
+    return wrapHandling(tryCall: () => _localDatasource.clearActiveSession());
+  }
+
+  @override
+  Future<Either<Failure, List<TrainingSessionModel>>> getSessionHistory() {
+    return wrapHandling(tryCall: () => _localDatasource.getSessionHistory());
+  }
+
+  @override
+  Future<Either<Failure, void>> appendSessionHistory(TrainingSessionModel session) {
+    return wrapHandling(tryCall: () => _localDatasource.appendSessionHistory(session));
   }
 
   @override

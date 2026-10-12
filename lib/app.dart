@@ -7,13 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/services/dependencies.dart';
 import 'core/theme/app_theme.dart';
 import 'features/quiz/presentation/bloc/progress_bloc.dart';
+import 'features/quiz/presentation/bloc/training_session_bloc.dart';
 import 'features/quiz/presentation/pages/bootstrap_screen.dart';
 
 /// Root widget for the Al-Bashaer driving-school exam prep app.
 ///
 /// [ProgressBloc] is the app-wide singleton holding progress (bookmarks,
 /// mistakes, results, statistics); it is provided above [MaterialApp] so every
-/// route can read it. [BootstrapScreen] syncs the question bank before home.
+/// route can read it, as is [TrainingSessionBloc], whose session spans routes. [BootstrapScreen] syncs the question bank before home.
 class TemplateApp extends StatelessWidget {
   /// Creates the root app widget.
   const TemplateApp({super.key});
@@ -25,8 +26,11 @@ class TemplateApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return BlocProvider<ProgressBloc>.value(
-          value: getIt<ProgressBloc>(),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<ProgressBloc>.value(value: getIt<ProgressBloc>()),
+            BlocProvider<TrainingSessionBloc>.value(value: getIt<TrainingSessionBloc>()),
+          ],
           child: MaterialApp(
             locale: context.locale,
             builder: BotToastInit(),

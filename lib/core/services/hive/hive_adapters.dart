@@ -3,6 +3,7 @@ import 'package:hive_ce/hive.dart';
 import '../../../features/quiz/data/models/category_model.dart';
 import '../../../features/quiz/data/models/question_model.dart';
 import '../../../features/quiz/data/models/quiz_result_model.dart';
+import '../../../features/quiz/data/models/training_session_model.dart';
 
 /// Central registry of every type persisted with Hive.
 ///
@@ -17,5 +18,8 @@ import '../../../features/quiz/data/models/quiz_result_model.dart';
   AdapterSpec<QuestionModel>(),
   AdapterSpec<QuizResultModel>(),
   AdapterSpec<AnswerLogEntry>(),
+  AdapterSpec<TrainingSessionStatus>(),
+  AdapterSpec<CategoryRoundResult>(),
+  AdapterSpec<TrainingSessionModel>(),
 ])
 part 'hive_adapters.g.dart';

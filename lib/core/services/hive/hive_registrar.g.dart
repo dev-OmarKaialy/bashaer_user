@@ -10,9 +10,12 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(AnswerLogEntryAdapter());
     registerAdapter(AnswerModelAdapter());
     registerAdapter(CategoryModelAdapter());
+    registerAdapter(CategoryRoundResultAdapter());
     registerAdapter(QuestionModelAdapter());
     registerAdapter(QuestionTypeAdapter());
     registerAdapter(QuizResultModelAdapter());
+    registerAdapter(TrainingSessionModelAdapter());
+    registerAdapter(TrainingSessionStatusAdapter());
   }
 }
 
@@ -21,8 +24,11 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(AnswerLogEntryAdapter());
     registerAdapter(AnswerModelAdapter());
     registerAdapter(CategoryModelAdapter());
+    registerAdapter(CategoryRoundResultAdapter());
     registerAdapter(QuestionModelAdapter());
     registerAdapter(QuestionTypeAdapter());
     registerAdapter(QuizResultModelAdapter());
+    registerAdapter(TrainingSessionModelAdapter());
+    registerAdapter(TrainingSessionStatusAdapter());
   }
 }

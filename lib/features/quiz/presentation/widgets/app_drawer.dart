@@ -21,6 +21,8 @@ import '../../../../core/widgets/race/speed_lines_background.dart';
 import '../bloc/progress_bloc.dart';
 import '../bloc/progress_event.dart';
 import '../bloc/progress_state.dart';
+import '../bloc/training_session_bloc.dart';
+import '../bloc/training_session_event.dart';
 
 /// Side menu: refresh the bank from the server, reset device-local progress,
 /// reach the school and read the app's own details.
@@ -118,6 +120,8 @@ class AppDrawer extends StatelessWidget {
     } else if (state.refreshStatus.isFailed) {
       Toaster.showToast('drawer.updateFailed'.tr());
     } else if (state.clearStatus.isSuccess) {
+      // Clearing statistics also wipes the training history; reread it.
+      context.read<TrainingSessionBloc>().add(const LoadTrainingSessionEvent());
       Toaster.showToast('drawer.clearDone'.tr(), isError: false);
     } else if (state.clearStatus.isFailed) {
       Toaster.showToast('drawer.clearFailed'.tr());

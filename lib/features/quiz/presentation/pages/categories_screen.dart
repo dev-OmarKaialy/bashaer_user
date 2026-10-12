@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/request_status.dart';
+import '../../../../core/utils/toaster.dart';
 import '../../../../core/widgets/race/entrance.dart';
 import '../../../../core/widgets/race/race_app_bar.dart';
 import '../../../../core/widgets/race/race_card.dart';
@@ -16,50 +15,105 @@ import '../../data/models/category_model.dart';
 import '../../data/models/stats_model.dart';
 import '../bloc/progress_bloc.dart';
 import '../bloc/progress_state.dart';
-import '../bloc/quiz_event.dart';
+import '../bloc/training_session_bloc.dart';
+import '../bloc/training_session_event.dart';
+import '../bloc/training_session_state.dart';
 import '../widgets/category_icon.dart';
 import '../widgets/empty_placeholder.dart';
-import '../widgets/exam_start_lights.dart';
-import 'quiz_screen.dart';
+import 'training_navigation.dart';
 
-/// Practice by topic: one "track" card per category with its question count
-/// and the user's running accuracy for that category.
+/// Training start: one "track" card per category with its question count and
+/// the user's running accuracy. Tapping one starts a training session from
+/// that category to the last, in order.
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: RaceAppBar(title: 'categories.title'.tr()),
-      body: BlocBuilder<ProgressBloc, ProgressState>(
-        builder: (context, state) {
-          if (state.status.isLoading) {
-            return RaceLoader(label: 'home.loading'.tr());
-          }
-          final categories = state.categoriesWithCount();
-          if (categories.isEmpty) {
-            return EmptyPlaceholder(icon: Icons.category_rounded, message: 'categories.empty'.tr());
-          }
-          return ListView.separated(
-            padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 28.h),
-            itemCount: categories.length,
-            separatorBuilder: (_, _) => SizedBox(height: 14.h),
-            itemBuilder: (context, index) => Entrance(
-              index: index,
-              child: _CategoryTile(category: categories[index], index: index),
-            ),
-          );
-        },
+    return BlocListener<TrainingSessionBloc, TrainingSessionState>(
+      listenWhen: (prev, curr) => prev.startStatus != curr.startStatus,
+      listener: (context, state) {
+        if (state.startStatus.isSuccess) openTrainingRound(context);
+        if (state.startStatus.isFailed) Toaster.showToast('training.startFailed'.tr());
+      },
+      child: Scaffold(
+        appBar: RaceAppBar(title: 'categories.title'.tr()),
+        body: BlocBuilder<ProgressBloc, ProgressState>(
+          builder: (context, state) {
+            if (state.status.isLoading) {
+              return RaceLoader(label: 'home.loading'.tr());
+            }
+            final categories = state.categoriesWithCount();
+            if (categories.isEmpty) {
+              return EmptyPlaceholder(
+                icon: Icons.category_rounded,
+                message: 'categories.empty'.tr(),
+              );
+            }
+            final trainable = state.trainingCategoryIds();
+            return ListView.separated(
+              padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 28.h),
+              itemCount: categories.length + 1,
+              separatorBuilder: (_, _) => SizedBox(height: 14.h),
+              itemBuilder: (context, index) {
+                if (index == 0) return const Entrance(child: _PickStartHint());
+                final category = categories[index - 1];
+                final position = trainable.indexOf(category.id);
+                return Entrance(
+                  index: index,
+                  child: _CategoryTile(
+                    category: category,
+                    index: index - 1,
+                    remaining: position < 0 ? 0 : trainable.length - position,
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Explains the flow: the chosen category is only where the run begins.
+class _PickStartHint extends StatelessWidget {
+  const _PickStartHint();
+
+  @override
+  Widget build(BuildContext context) {
+    return RaceCard(
+      color: AppTheme.mutedSurface,
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      child: Row(
+        children: [
+          Icon(Icons.flag_circle_rounded, color: AppTheme.nitroBlue, size: 30.r),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text('training.pickStart'.tr(), style: Theme.of(context).textTheme.bodyMedium),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _CategoryTile extends StatelessWidget {
-  const _CategoryTile({required this.category, required this.index});
+  const _CategoryTile({required this.category, required this.index, required this.remaining});
 
   final CategoryModel category;
   final int index;
+
+  /// Categories the run goes through when started here, this one included.
+  /// Zero when the category has no questions.
+  final int remaining;
+
+  void _startTraining(BuildContext context) {
+    final categoryIds = context.read<ProgressBloc>().state.trainingCategoryIds(
+      startFrom: category.id,
+    );
+    context.read<TrainingSessionBloc>().add(StartTrainingSessionEvent(categoryIds: categoryIds));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,30 +122,9 @@ class _CategoryTile extends StatelessWidget {
     final accuracy = catStat == null || catStat.answered == 0 ? null : catStat.accuracy.round();
     final gradient = AppTheme.accentGradientAt(index);
 
-    void startPractice() async {
-      final all = context.read<ProgressBloc>().state.questions;
-      await showRaceStartLights(
-        context,
-        getReadyLabel: 'practice.getReady'.tr(),
-        goLabel: 'practice.go'.tr(),
-      );
-      if (!context.mounted) return;
-      unawaited(
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => QuizScreen(
-              questions: all.where((q) => q.categoryId == category.id).toList(),
-              mode: QuizMode.practice,
-              title: category.name,
-            ),
-          ),
-        ),
-      );
-    }
-
     return RaceCard(
-      onTap: startPractice,
-      semanticLabel: '${'categories.practice'.tr()} ${category.name}',
+      onTap: remaining == 0 ? null : () => _startTraining(context),
+      semanticLabel: '${'training.startFrom'.tr()} ${category.name}',
       padding: EdgeInsets.all(14.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,6 +161,12 @@ class _CategoryTile extends StatelessWidget {
                             label: '${'categories.accuracy'.tr()} $accuracy%',
                             color: AppTheme.scoreColor(accuracy.toDouble()),
                             icon: Icons.speed_rounded,
+                          ),
+                        if (remaining > 1)
+                          RaceTag(
+                            label: 'training.toFinish'.tr(namedArgs: {'count': '$remaining'}),
+                            color: AppTheme.inkSoft,
+                            icon: Icons.sports_score_rounded,
                           ),
                       ],
                     ),

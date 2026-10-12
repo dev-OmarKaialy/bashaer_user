@@ -61,6 +61,10 @@ import '../../features/quiz/domain/usecases/clear_bookmarks_usecase.dart'
     as _i739;
 import '../../features/quiz/domain/usecases/clear_statistics_usecase.dart'
     as _i561;
+import '../../features/quiz/domain/usecases/finish_session_usecase.dart'
+    as _i226;
+import '../../features/quiz/domain/usecases/get_active_session_usecase.dart'
+    as _i586;
 import '../../features/quiz/domain/usecases/get_all_questions_usecase.dart'
     as _i912;
 import '../../features/quiz/domain/usecases/get_answer_log_usecase.dart'
@@ -70,11 +74,15 @@ import '../../features/quiz/domain/usecases/get_bookmarked_ids_usecase.dart'
 import '../../features/quiz/domain/usecases/get_categories_usecase.dart'
     as _i564;
 import '../../features/quiz/domain/usecases/get_results_usecase.dart' as _i912;
+import '../../features/quiz/domain/usecases/get_session_history_usecase.dart'
+    as _i827;
 import '../../features/quiz/domain/usecases/get_stats_usecase.dart' as _i454;
 import '../../features/quiz/domain/usecases/get_trial_questions_usecase.dart'
     as _i221;
 import '../../features/quiz/domain/usecases/record_answer_usecase.dart'
     as _i694;
+import '../../features/quiz/domain/usecases/save_active_session_usecase.dart'
+    as _i151;
 import '../../features/quiz/domain/usecases/save_result_usecase.dart' as _i344;
 import '../../features/quiz/domain/usecases/sync_question_bank_usecase.dart'
     as _i415;
@@ -83,6 +91,8 @@ import '../../features/quiz/domain/usecases/toggle_bookmark_usecase.dart'
 import '../../features/quiz/presentation/bloc/bootstrap_bloc.dart' as _i940;
 import '../../features/quiz/presentation/bloc/progress_bloc.dart' as _i567;
 import '../../features/quiz/presentation/bloc/quiz_bloc.dart' as _i505;
+import '../../features/quiz/presentation/bloc/training_session_bloc.dart'
+    as _i295;
 import '../../features/subscription/data/datasources/subscription_plan_remote_datasource.dart'
     as _i710;
 import '../../features/subscription/data/datasources/subscription_plan_store.dart'
@@ -220,6 +230,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i561.ClearStatisticsUsecase>(
       () => _i561.ClearStatisticsUsecase(gh<_i613.QuizRepository>()),
     );
+    gh.factory<_i226.FinishSessionUsecase>(
+      () => _i226.FinishSessionUsecase(gh<_i613.QuizRepository>()),
+    );
+    gh.factory<_i586.GetActiveSessionUsecase>(
+      () => _i586.GetActiveSessionUsecase(gh<_i613.QuizRepository>()),
+    );
     gh.factory<_i912.GetAllQuestionsUsecase>(
       () => _i912.GetAllQuestionsUsecase(gh<_i613.QuizRepository>()),
     );
@@ -235,11 +251,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i912.GetResultsUsecase>(
       () => _i912.GetResultsUsecase(gh<_i613.QuizRepository>()),
     );
+    gh.factory<_i827.GetSessionHistoryUsecase>(
+      () => _i827.GetSessionHistoryUsecase(gh<_i613.QuizRepository>()),
+    );
     gh.factory<_i454.GetStatsUsecase>(
       () => _i454.GetStatsUsecase(gh<_i613.QuizRepository>()),
     );
     gh.factory<_i694.RecordAnswerUsecase>(
       () => _i694.RecordAnswerUsecase(gh<_i613.QuizRepository>()),
+    );
+    gh.factory<_i151.SaveActiveSessionUsecase>(
+      () => _i151.SaveActiveSessionUsecase(gh<_i613.QuizRepository>()),
     );
     gh.factory<_i344.SaveResultUsecase>(
       () => _i344.SaveResultUsecase(gh<_i613.QuizRepository>()),
@@ -274,6 +296,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i940.BootstrapBloc>(
       () => _i940.BootstrapBloc(
         syncQuestionBank: gh<_i415.SyncQuestionBankUsecase>(),
+      ),
+    );
+    gh.lazySingleton<_i295.TrainingSessionBloc>(
+      () => _i295.TrainingSessionBloc(
+        getActiveSession: gh<_i586.GetActiveSessionUsecase>(),
+        saveActiveSession: gh<_i151.SaveActiveSessionUsecase>(),
+        finishSession: gh<_i226.FinishSessionUsecase>(),
+        getSessionHistory: gh<_i827.GetSessionHistoryUsecase>(),
       ),
     );
     gh.factory<_i807.OnboardingCubit>(

@@ -19,6 +19,11 @@ class QuizState extends Equatable {
     this.examTitle,
     this.outcome,
     this.selectionSerial = 0,
+    this.points = 0,
+    this.correctAttempts = 0,
+    this.totalAttempts = 0,
+    this.attemptSerial = 0,
+    this.streak = 0,
   });
 
   final QuizPhase phase;
@@ -41,6 +46,36 @@ class QuizState extends Equatable {
   final RequestStatus loadStatus;
   final String? examTitle;
   final QuizOutcome? outcome;
+
+  /// Practice score: +1 per correct attempt, −1 per wrong one, never below 0.
+  final int points;
+
+  /// Practice attempts in this quiz; accuracy is correct / total attempts.
+  final int correctAttempts;
+  final int totalAttempts;
+
+  /// Bumped on every scored attempt, so listeners can persist each one.
+  final int attemptSerial;
+
+  /// Practice: correct attempts in a row, reset to 0 by a wrong one. After a
+  /// scored attempt, a positive streak means that attempt was correct.
+  final int streak;
+
+  int get wrongAttempts => totalAttempts - correctAttempts;
+
+  /// Net points earned in this quiz, before the floor at zero.
+  int get netPoints => correctAttempts - wrongAttempts;
+
+  double get attemptAccuracy => totalAttempts == 0 ? 0 : (correctAttempts / totalAttempts) * 100;
+
+  /// Every question has been answered correctly.
+  bool get allSolved =>
+      questions.isNotEmpty && questions.every((q) => correctnessByQuestion[q.id] == true);
+
+  List<String> get solvedQuestionIds => [
+    for (final q in questions)
+      if (correctnessByQuestion[q.id] == true) q.id,
+  ];
 
   bool get isExam => mode == QuizMode.exam;
   bool get isPractice => mode == QuizMode.practice;
@@ -85,6 +120,11 @@ class QuizState extends Equatable {
     examTitle,
     outcome,
     selectionSerial,
+    points,
+    correctAttempts,
+    totalAttempts,
+    attemptSerial,
+    streak,
   ];
 
   QuizState copyWith({
@@ -101,6 +141,12 @@ class QuizState extends Equatable {
     String? examTitle,
     QuizOutcome? outcome,
     int? selectionSerial,
+    int? points,
+    int? correctAttempts,
+    int? totalAttempts,
+    int? attemptSerial,
+    int? streak,
+    bool clearOutcome = false,
   }) {
     return QuizState(
       phase: phase ?? this.phase,
@@ -114,8 +160,13 @@ class QuizState extends Equatable {
       examDurationSeconds: examDurationSeconds ?? this.examDurationSeconds,
       loadStatus: loadStatus ?? this.loadStatus,
       examTitle: examTitle ?? this.examTitle,
-      outcome: outcome ?? this.outcome,
+      outcome: clearOutcome ? null : (outcome ?? this.outcome),
       selectionSerial: selectionSerial ?? this.selectionSerial,
+      points: points ?? this.points,
+      correctAttempts: correctAttempts ?? this.correctAttempts,
+      totalAttempts: totalAttempts ?? this.totalAttempts,
+      attemptSerial: attemptSerial ?? this.attemptSerial,
+      streak: streak ?? this.streak,
     );
   }
 }

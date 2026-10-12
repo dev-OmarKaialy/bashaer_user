@@ -23,6 +23,8 @@ import '../bloc/progress_bloc.dart';
 import '../bloc/progress_event.dart';
 import '../bloc/progress_state.dart';
 import '../bloc/quiz_event.dart';
+import '../bloc/training_session_bloc.dart';
+import '../bloc/training_session_event.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/exam_start_lights.dart';
 import 'bookmarks_screen.dart';
@@ -45,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     context.read<ProgressBloc>().add(const LoadProgressEvent());
+    context.read<TrainingSessionBloc>().add(const LoadTrainingSessionEvent());
   }
 
   @override
@@ -52,8 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(foregroundColor: Colors.white, backgroundColor: Colors.transparent),
         drawer: const AppDrawer(),
         body: ListView(
           padding: EdgeInsets.zero,
@@ -73,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   SizedBox(height: 14.h),
-                  const Entrance(index: 2, child: _PracticeModeCard()),
+                  const Entrance(index: 2, child: _TrainingModeCard()),
                   // SizedBox(height: 14.h),
                   // const Entrance(index: 3, child: _ExamModeCard()),
                   SizedBox(height: 28.h),
@@ -119,10 +120,30 @@ class _HomeHero extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Entrance(child: const _BrandRow().setHero(heroKey: 'brand')),
-                SizedBox(height: 20.h),
+                // The menu button stays outside the hero: an IconButton needs a
+                // Material ancestor, which the hero flight overlay doesn't have.
+                Entrance(
+                  child: Row(
+                    children: [
+                      const _MenuButton(),
+                      Expanded(child: const _BrandRow().setHero(heroKey: 'brand')),
+                      SizedBox(width: 8.w),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 12.h),
                 Entrance(
                   index: 1,
+                  child: Text(
+                    'home.greeting'.tr(),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppTheme.onPrimaryColor.withValues(alpha: 0.9),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 14.h),
+                Entrance(
+                  index: 2,
                   scale: true,
                   child: BlocSelector<ProgressBloc, ProgressState, StatsModel?>(
                     selector: (state) => state.stats,
@@ -145,40 +166,19 @@ class _BrandRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppTheme.cardSurface,
-            borderRadius: BorderRadius.circular(AppTheme.radiusM.r),
-            boxShadow: AppTheme.elevatedCardShadow,
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(4.r),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.radiusS.r),
-              child: Image.asset(
-                'assets/icons/launcher_icon.png',
-                width: 48.r,
-                height: 48.r,
-                cacheWidth: 144,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (AppContact.teacherName.isNotEmpty) const _TeacherBadge(),
               Text(
                 'app.title'.tr(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(
                   context,
-                ).textTheme.headlineMedium?.copyWith(color: AppTheme.onPrimaryColor),
+                ).textTheme.titleMedium?.copyWith(color: AppTheme.onPrimaryColor),
               ),
+              if (AppContact.teacherName.isNotEmpty) const _TeacherBadge(),
             ],
           ),
         ),
@@ -209,7 +209,7 @@ class _TeacherBadge extends StatelessWidget {
               '${'home.teacher'.tr()}: ${AppContact.teacherName}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppTheme.onPrimaryColor.withValues(alpha: 0.85),
               ),
             ),
@@ -266,25 +266,25 @@ class _DashboardCluster extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ClusterDial(
-                    icon: FontAwesomeIcons.flagCheckered,
-                    value: s?.examsTaken ?? 0,
-                    label: 'home.exams'.tr(),
+                    icon: FontAwesomeIcons.listCheck,
+                    value: s?.totalAnswered ?? 0,
+                    label: 'home.answered'.tr(),
                   ),
                 ),
                 const _ClusterDivider(),
                 Expanded(
                   child: _ClusterDial(
-                    icon: FontAwesomeIcons.carBurst,
-                    value: s?.mistakeCount ?? 0,
-                    label: 'home.mistakes'.tr(),
+                    icon: FontAwesomeIcons.circleCheck,
+                    value: s?.totalCorrect ?? 0,
+                    label: 'home.correct'.tr(),
                   ),
                 ),
                 const _ClusterDivider(),
                 Expanded(
                   child: _ClusterDial(
-                    icon: FontAwesomeIcons.solidBookmark,
-                    value: s?.bookmarkedCount ?? 0,
-                    label: 'home.bookmarks'.tr(),
+                    icon: FontAwesomeIcons.circleXmark,
+                    value: s?.totalWrong ?? 0,
+                    label: 'home.wrong'.tr(),
                   ),
                 ),
               ],
@@ -384,19 +384,26 @@ class _LoadErrorBanner extends StatelessWidget {
   }
 }
 
-class _PracticeModeCard extends StatelessWidget {
-  const _PracticeModeCard();
+/// Training: the student picks the category to start from, then goes on
+/// category by category to the last one, collecting points.
+class _TrainingModeCard extends StatelessWidget {
+  const _TrainingModeCard();
 
   @override
   Widget build(BuildContext context) {
-    return _ModeCard(
-      gradient: AppTheme.oceanGradient,
-      icon: FontAwesomeIcons.road,
-      tag: 'home.practiceTag'.tr(),
-      title: 'home.practice'.tr(),
-      subtitle: 'home.practiceSubtitle'.tr(),
-      actionIcon: Icons.play_arrow_rounded,
-      onTap: () => _open(context, const CategoriesScreen()),
+    return BlocSelector<ProgressBloc, ProgressState, bool>(
+      selector: (state) => state.questions.isNotEmpty,
+      builder: (context, hasQuestions) {
+        return _ModeCard(
+          gradient: AppTheme.limeGradient,
+          icon: FontAwesomeIcons.flagCheckered,
+          tag: 'training.tag'.tr(),
+          title: 'training.title'.tr(),
+          subtitle: 'training.subtitle'.tr(),
+          actionIcon: Icons.play_arrow_rounded,
+          onTap: hasQuestions ? () => _open(context, const CategoriesScreen()) : null,
+        );
+      },
     );
   }
 }

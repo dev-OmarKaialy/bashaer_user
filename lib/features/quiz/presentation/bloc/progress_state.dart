@@ -43,6 +43,20 @@ class ProgressState extends Equatable {
     return list.map((c) => c.copyWith(questionCount: counts[c.id] ?? 0)).toList();
   }
 
+  /// Ids of the categories a training session runs through, in order: every
+  /// category that has at least one question, beginning at [startFrom] when
+  /// given. Empty when [startFrom] has no questions.
+  List<String> trainingCategoryIds({String? startFrom}) {
+    final withQuestions = questions.map((q) => q.categoryId).toSet();
+    final ids = [
+      for (final c in categories)
+        if (withQuestions.contains(c.id)) c.id,
+    ];
+    if (startFrom == null) return ids;
+    final start = ids.indexOf(startFrom);
+    return start < 0 ? const [] : ids.sublist(start);
+  }
+
   @override
   List<Object?> get props => [
     status,

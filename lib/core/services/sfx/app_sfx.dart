@@ -27,6 +27,13 @@ class AppSfx {
 
   Future<void> playFireworks() => _play('assets/sounds/fireworks.mp3');
 
+  /// Cheer for a run of correct answers, bigger as [streak] grows.
+  Future<void> playStreak(int streak) {
+    if (streak >= 10) return playFireworks();
+    if (streak >= 7) return _play('assets/sounds/engine_start.mp3');
+    return playGo();
+  }
+
   Future<void> stop() async {
     try {
       await _player.stop();

@@ -19,19 +19,26 @@ import '../../data/datasources/listen_mode_settings.dart';
 import '../../data/datasources/quiz_narrator.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_result_model.dart';
+import '../../data/models/training_session_model.dart';
 import '../bloc/progress_bloc.dart';
 import '../bloc/progress_event.dart';
 import '../bloc/progress_state.dart';
 import '../bloc/quiz_bloc.dart';
 import '../bloc/quiz_event.dart';
 import '../bloc/quiz_state.dart';
+import '../bloc/training_session_bloc.dart';
+import '../bloc/training_session_event.dart';
 import '../widgets/answer_option_card.dart';
+import '../widgets/category_result_dialog.dart';
 import '../widgets/listen_speak_button.dart';
 import '../widgets/questions_grid_sheet.dart';
 import '../widgets/quiz_network_image.dart';
 import '../widgets/quiz_result_view.dart';
 import '../widgets/quiz_timer.dart';
 import '../widgets/spoken_highlight_text.dart';
+import '../widgets/streak_badge.dart';
+import '../widgets/streak_celebration.dart';
+import 'training_navigation.dart';
 
 /// Runs a quiz session: loads the given questions into a fresh [QuizBloc] and
 /// switches between the answering flow and the result view.
@@ -46,12 +53,18 @@ class QuizScreen extends StatelessWidget {
     this.onFinished,
     this.finishLabel,
     this.finishIcon,
+    this.trainingSession,
   });
 
   final List<QuestionModel> questions;
   final QuizMode mode;
   final int? examTimeSeconds;
   final String? title;
+
+  /// Set when this quiz is one category of a training session: points carry
+  /// over, every attempt is saved, and solving the category opens the round
+  /// dialog instead of the result view.
+  final TrainingSessionModel? trainingSession;
 
   /// When false the app bar drops the close button, so a session the student
   /// has to finish (the free trial) cannot be abandoned half way.
@@ -78,6 +91,13 @@ class QuizScreen extends StatelessWidget {
               mode: mode,
               examTimeSeconds: examTimeSeconds,
               title: title,
+              initialPoints: trainingSession?.points ?? 0,
+              initialCorrectAttempts: trainingSession?.currentCorrectAttempts ?? 0,
+              initialTotalAttempts: trainingSession?.currentTotalAttempts ?? 0,
+              solvedQuestionIds: trainingSession?.solvedQuestionIds ?? const [],
+              initialStreak: trainingSession == null
+                  ? 0
+                  : context.read<TrainingSessionBloc>().state.streak,
             ),
           );
           return bloc;
@@ -89,6 +109,7 @@ class QuizScreen extends StatelessWidget {
           onFinished: onFinished,
           finishLabel: finishLabel,
           finishIcon: finishIcon,
+          isTraining: trainingSession != null,
         ),
       ),
     );
@@ -104,6 +125,7 @@ class QuizScreenBody extends StatefulWidget {
     this.onFinished,
     this.finishLabel,
     this.finishIcon,
+    this.isTraining = false,
   });
 
   final int examTimeSeconds;
@@ -112,6 +134,7 @@ class QuizScreenBody extends StatefulWidget {
   final VoidCallback? onFinished;
   final String? finishLabel;
   final IconData? finishIcon;
+  final bool isTraining;
 
   @override
   State<QuizScreenBody> createState() => _QuizScreenBodyState();
@@ -125,120 +148,198 @@ class _QuizScreenBodyState extends State<QuizScreenBody> {
     super.dispose();
   }
 
+  /// Persists the training session after every scored attempt, and hands the
+  /// streak on to the next category.
+  void _saveAttempt(BuildContext context, QuizState state) {
+    context.read<TrainingSessionBloc>().add(
+      RecordAttemptTrainingSessionEvent(
+        points: state.points,
+        correctAttempts: state.correctAttempts,
+        totalAttempts: state.totalAttempts,
+        solvedQuestionIds: state.solvedQuestionIds,
+        streak: state.streak,
+      ),
+    );
+  }
+
+  /// Every question of the training category is solved: archive the round,
+  /// then (once the feedback sounds had a moment) show the round dialog.
+  Future<void> _onCategorySolved(BuildContext context, QuizState state) async {
+    final training = context.read<TrainingSessionBloc>();
+    final session = training.state.session;
+    if (session == null) return;
+    training.add(
+      CompleteCategoryTrainingSessionEvent(
+        categoryName: widget.title ?? '',
+        points: state.points,
+        correctAttempts: state.correctAttempts,
+        totalAttempts: state.totalAttempts,
+      ),
+    );
+    await Future<void>.delayed(const Duration(seconds: 1));
+    if (!context.mounted) return;
+    final isLast = session.isLastCategory;
+    await showRaceDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => CategoryResultDialog(
+        categoryName: widget.title ?? '',
+        categoryNumber: session.currentCategoryIndex + 1,
+        categoryCount: session.categoryIds.length,
+        roundPoints: state.netPoints,
+        correctAttempts: state.correctAttempts,
+        totalAttempts: state.totalAttempts,
+        sessionPoints: state.points,
+        onContinue: () =>
+            isLast ? openTrainingResults(context) : openTrainingRound(context, replace: true),
+        onFinish: () => finishTrainingNow(context),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<QuizBloc, QuizState>(
-      listenWhen: (previous, current) =>
-          previous.phase != QuizPhase.results && current.phase == QuizPhase.results,
-      listener: (context, state) {
-        getIt<QuizNarrator>().stop();
-        getIt<AppSfx>().playFireworks();
-        if (!state.isExam) return;
-        final outcome = state.outcome;
-        if (outcome == null) return;
-        final timeUsed = state.remainingSeconds == 0
-            ? widget.examTimeSeconds
-            : widget.examTimeSeconds - state.remainingSeconds;
-        final total = state.totalQuestions;
-        final result = QuizResultModel(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          examTitle: state.examTitle ?? widget.title ?? 'exam.title'.tr(),
-          dateTime: DateTime.now().millisecondsSinceEpoch,
-          totalQuestions: total,
-          answered: outcome.answered,
-          correct: outcome.correct,
-          wrong: outcome.wrong,
-          unanswered: outcome.unanswered,
-          totalTimeSeconds: widget.examTimeSeconds,
-          timeUsedSeconds: timeUsed,
-          passingScore: (total * 0.6).ceil(),
-          passed: outcome.correct >= (total * 0.6).ceil(),
-        );
-        context.read<ProgressBloc>().add(SaveResultProgressEvent(result: result));
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<QuizBloc, QuizState>(
+          listenWhen: (previous, current) =>
+              widget.isTraining && previous.attemptSerial != current.attemptSerial,
+          listener: _saveAttempt,
+        ),
+        BlocListener<QuizBloc, QuizState>(
+          listenWhen: (previous, current) =>
+              widget.isTraining &&
+              current.phase == QuizPhase.answering &&
+              !previous.allSolved &&
+              current.allSolved,
+          listener: _onCategorySolved,
+        ),
+      ],
       child: BlocListener<QuizBloc, QuizState>(
-        listenWhen: (previous, current) {
-          if (previous.phase != QuizPhase.answering) return false;
-          if (current.phase != QuizPhase.answering) return false;
-          return current.selectionSerial != previous.selectionSerial;
+        listenWhen: (previous, current) =>
+            previous.phase != QuizPhase.results && current.phase == QuizPhase.results,
+        listener: (context, state) {
+          getIt<QuizNarrator>().stop();
+          getIt<AppSfx>().playFireworks();
+          if (!state.isExam) return;
+          final outcome = state.outcome;
+          if (outcome == null) return;
+          final timeUsed = state.remainingSeconds == 0
+              ? widget.examTimeSeconds
+              : widget.examTimeSeconds - state.remainingSeconds;
+          final total = state.totalQuestions;
+          final result = QuizResultModel(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            examTitle: state.examTitle ?? widget.title ?? 'exam.title'.tr(),
+            dateTime: DateTime.now().millisecondsSinceEpoch,
+            totalQuestions: total,
+            answered: outcome.answered,
+            correct: outcome.correct,
+            wrong: outcome.wrong,
+            unanswered: outcome.unanswered,
+            totalTimeSeconds: widget.examTimeSeconds,
+            timeUsedSeconds: timeUsed,
+            passingScore: (total * 0.6).ceil(),
+            passed: outcome.correct >= (total * 0.6).ceil(),
+          );
+          context.read<ProgressBloc>().add(SaveResultProgressEvent(result: result));
         },
-        listener: (context, state) async {
-          final question = state.currentQuestion;
-          if (question == null || !state.isPractice) return;
-          final correct = state.isCorrect(question.id);
-          final sfx = getIt<AppSfx>();
-          final sounds = <Future<void>>[correct ? sfx.playTick() : sfx.playWarning()];
-          if (getIt<ListenModeSettings>().enabled) {
-            sounds.add(getIt<QuizNarrator>().speakFeedback(correct: correct));
-          }
-          try {
-            await Future.wait(sounds);
-          } catch (_) {}
-          // When answered correctly: let the sounds finish, wait one second,
-          // then auto-advance — unless the user already moved on or the
-          // question has left the answering flow.
-          if (!correct) return;
-          await Future<void>.delayed(const Duration(seconds: 1));
-          if (!context.mounted) return;
-          final bloc = context.read<QuizBloc>();
-          final current = bloc.state;
-          if (current.phase != QuizPhase.answering) return;
-          if (current.currentQuestion?.id != question.id) return;
-          if (!current.isCorrect(question.id)) return;
-          if (current.currentIndex >= current.totalQuestions - 1) return;
-          bloc.add(const NextQuestionEvent());
-        },
-        child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight + 8),
-            child: BlocBuilder<QuizBloc, QuizState>(
-              buildWhen: (prev, curr) =>
-                  prev.mode != curr.mode ||
-                  prev.examTitle != curr.examTitle ||
-                  prev.phase != curr.phase,
-              builder: (context, state) => RaceAppBar(
-                showBack: widget.allowExit,
-                title: state.isExam
-                    ? (state.examTitle ?? 'exam.title'.tr())
-                    : (widget.title ?? 'quiz.practice'.tr()),
-                leading: widget.allowExit
-                    ? Padding(
-                        padding: const EdgeInsetsDirectional.only(start: 12),
-                        child: RaceIconButton(
-                          icon: Icons.close_rounded,
-                          tooltip: 'quiz.close'.tr(),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      )
-                    : null,
-                actions: [
-                  if (state.isExam) ...[const QuizTimer(), SizedBox(width: 4.w)],
-                  if (state.phase == QuizPhase.answering) ...[
-                    RaceIconButton(
-                      icon: Icons.grid_view_rounded,
-                      tooltip: 'quiz.grid'.tr(),
-                      onPressed: () => const QuestionsGridSheet().open(context),
-                    ),
-                    const BookmarkToggleButton(),
+        child: BlocListener<QuizBloc, QuizState>(
+          listenWhen: (previous, current) {
+            if (previous.phase != QuizPhase.answering) return false;
+            if (current.phase != QuizPhase.answering) return false;
+            return current.selectionSerial != previous.selectionSerial;
+          },
+          listener: (context, state) async {
+            final question = state.currentQuestion;
+            if (question == null || !state.isPractice) return;
+            final correct = state.isCorrect(question.id);
+            final sfx = getIt<AppSfx>();
+            // A correct answer that reaches a streak milestone gets a cheer
+            // instead of the tick (the visual burst is StreakCelebrationLayer).
+            final sounds = <Future<void>>[
+              if (!correct)
+                sfx.playWarning()
+              else if (isStreakMilestone(state.streak))
+                sfx.playStreak(state.streak)
+              else
+                sfx.playTick(),
+            ];
+            if (getIt<ListenModeSettings>().enabled) {
+              sounds.add(getIt<QuizNarrator>().speakFeedback(correct: correct));
+            }
+            try {
+              await Future.wait(sounds);
+            } catch (_) {}
+            // When answered correctly: let the sounds finish, wait one second,
+            // then auto-advance — unless the user already moved on or the
+            // question has left the answering flow.
+            if (!correct) return;
+            await Future<void>.delayed(const Duration(seconds: 1));
+            if (!context.mounted) return;
+            final bloc = context.read<QuizBloc>();
+            final current = bloc.state;
+            if (current.phase != QuizPhase.answering) return;
+            if (current.currentQuestion?.id != question.id) return;
+            if (!current.isCorrect(question.id)) return;
+            if (current.currentIndex >= current.totalQuestions - 1) return;
+            bloc.add(const NextQuestionEvent());
+          },
+          child: Scaffold(
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight + 8),
+              child: BlocBuilder<QuizBloc, QuizState>(
+                buildWhen: (prev, curr) =>
+                    prev.mode != curr.mode ||
+                    prev.examTitle != curr.examTitle ||
+                    prev.phase != curr.phase,
+                builder: (context, state) => RaceAppBar(
+                  showBack: widget.allowExit,
+                  title: state.isExam
+                      ? (state.examTitle ?? 'exam.title'.tr())
+                      : (widget.title ?? 'quiz.practice'.tr()),
+                  leading: widget.allowExit
+                      ? Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 12),
+                          child: RaceIconButton(
+                            icon: Icons.close_rounded,
+                            tooltip: 'quiz.close'.tr(),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        )
+                      : null,
+                  actions: [
+                    if (state.isExam) ...[const QuizTimer(), SizedBox(width: 4.w)],
+                    if (state.phase == QuizPhase.answering) ...[
+                      RaceIconButton(
+                        icon: Icons.grid_view_rounded,
+                        tooltip: 'quiz.grid'.tr(),
+                        onPressed: () => const QuestionsGridSheet().open(context),
+                      ),
+                      const BookmarkToggleButton(),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
-          ),
-          body: BlocBuilder<QuizBloc, QuizState>(
-            buildWhen: (prev, curr) => prev.phase != curr.phase,
-            builder: (context, state) => AnimatedSwitcher(
-              duration: AppTheme.animationNormal,
-              child: switch (state.phase) {
-                QuizPhase.loading => const RaceLoader(key: ValueKey('loading')),
-                QuizPhase.results => QuizResultView(
-                  key: const ValueKey('results'),
-                  onFinished: widget.onFinished,
-                  finishLabel: widget.finishLabel,
-                  finishIcon: widget.finishIcon,
-                ),
-                QuizPhase.answering => const _AnsweringLayout(key: ValueKey('answering')),
-              },
+            body: BlocBuilder<QuizBloc, QuizState>(
+              buildWhen: (prev, curr) => prev.phase != curr.phase,
+              builder: (context, state) => AnimatedSwitcher(
+                duration: AppTheme.animationNormal,
+                child: switch (state.phase) {
+                  QuizPhase.loading => const RaceLoader(key: ValueKey('loading')),
+                  QuizPhase.results => QuizResultView(
+                    key: const ValueKey('results'),
+                    onFinished: widget.onFinished,
+                    finishLabel: widget.finishLabel,
+                    finishIcon: widget.finishIcon,
+                  ),
+                  QuizPhase.answering => _AnsweringLayout(
+                    key: const ValueKey('answering'),
+                    isTraining: widget.isTraining,
+                  ),
+                },
+              ),
             ),
           ),
         ),
@@ -279,7 +380,9 @@ class BookmarkToggleButton extends StatelessWidget {
 }
 
 class _AnsweringLayout extends StatefulWidget {
-  const _AnsweringLayout({super.key});
+  const _AnsweringLayout({super.key, required this.isTraining});
+
+  final bool isTraining;
 
   @override
   State<_AnsweringLayout> createState() => _AnsweringLayoutState();
@@ -310,9 +413,11 @@ class _AnsweringLayoutState extends State<_AnsweringLayout> {
         if (question == null) return;
         getIt<QuizNarrator>().speakQuestion(question);
       },
-      child: Column(
+      child: Stack(
         children: [
-          const _SessionProgress(),
+          Column(
+            children: [
+              const _SessionProgress(),
           SizedBox(height: 12.h),
           Expanded(
             child: BlocBuilder<QuizBloc, QuizState>(
@@ -353,7 +458,10 @@ class _AnsweringLayoutState extends State<_AnsweringLayout> {
               },
             ),
           ),
-          const _BottomActions(),
+              _BottomActions(isTraining: widget.isTraining),
+            ],
+          ),
+          const Positioned.fill(child: StreakCelebrationLayer()),
         ],
       ),
     );
@@ -401,7 +509,9 @@ class _SessionProgress extends StatelessWidget {
         buildWhen: (prev, curr) =>
             prev.currentIndex != curr.currentIndex ||
             prev.questions != curr.questions ||
-            prev.selectedAnswers != curr.selectedAnswers,
+            prev.selectedAnswers != curr.selectedAnswers ||
+            prev.points != curr.points ||
+            prev.streak != curr.streak,
         builder: (context, state) {
           final total = state.totalQuestions;
           final progress = total == 0 ? 0.0 : (state.currentIndex + 1) / total;
@@ -436,11 +546,31 @@ class _SessionProgress extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  RaceTag(
-                    label: '${'quiz.answered'.tr()} $answered/$total',
-                    color: AppTheme.mintGreen,
-                    icon: Icons.check_circle_rounded,
-                  ),
+                  // Practice shows the points and the streak instead of the
+                  // answered count, which the locked progression makes redundant.
+                  if (state.isPractice) ...[
+                    ScoreFloat(
+                      points: state.points,
+                      child: AnimatedSwitcher(
+                        duration: AppTheme.animationNormal,
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(scale: animation, child: child),
+                        child: RaceTag(
+                          key: ValueKey(state.points),
+                          label: '${state.points} ${'quiz.points'.tr()}',
+                          color: AppTheme.turboOrange,
+                          icon: Icons.star_rounded,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                    StreakBadge(streak: state.streak),
+                  ] else
+                    RaceTag(
+                      label: '${'quiz.answered'.tr()} $answered/$total',
+                      color: AppTheme.mintGreen,
+                      icon: Icons.check_circle_rounded,
+                    ),
                 ],
               ),
               SizedBox(height: 8.h),
@@ -677,7 +807,10 @@ class _PracticeFeedback extends StatelessWidget {
 }
 
 class _BottomActions extends StatelessWidget {
-  const _BottomActions();
+  const _BottomActions({required this.isTraining});
+
+  /// In a training session "Finish" ends the whole session instead.
+  final bool isTraining;
 
   @override
   Widget build(BuildContext context) {
@@ -735,6 +868,24 @@ class _BottomActions extends StatelessWidget {
                                     : 'exam.confirmSubmit'.tr(),
                                 onConfirm: () =>
                                     context.read<QuizBloc>().add(const SubmitQuizEvent()),
+                              ),
+                            );
+                          },
+                        )
+                      : isTraining
+                      ? RaceButton(
+                          label: 'training.end'.tr(),
+                          icon: Icons.stop_circle_rounded,
+                          gradient: AppTheme.dangerGradient,
+                          dense: true,
+                          onPressed: () {
+                            showRaceDialog<void>(
+                              context: context,
+                              builder: (_) => RaceConfirmDialog(
+                                title: 'training.confirmEnd'.tr(),
+                                icon: Icons.stop_circle_rounded,
+                                gradient: AppTheme.dangerGradient,
+                                onConfirm: () => finishTrainingNow(context),
                               ),
                             );
                           },

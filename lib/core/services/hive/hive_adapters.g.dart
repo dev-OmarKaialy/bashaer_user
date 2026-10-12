@@ -327,3 +327,159 @@ class AnswerLogEntryAdapter extends TypeAdapter<AnswerLogEntry> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class TrainingSessionStatusAdapter extends TypeAdapter<TrainingSessionStatus> {
+  @override
+  final typeId = 6;
+
+  @override
+  TrainingSessionStatus read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return TrainingSessionStatus.active;
+      case 1:
+        return TrainingSessionStatus.completed;
+      case 2:
+        return TrainingSessionStatus.stopped;
+      default:
+        return TrainingSessionStatus.active;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, TrainingSessionStatus obj) {
+    switch (obj) {
+      case TrainingSessionStatus.active:
+        writer.writeByte(0);
+      case TrainingSessionStatus.completed:
+        writer.writeByte(1);
+      case TrainingSessionStatus.stopped:
+        writer.writeByte(2);
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TrainingSessionStatusAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class CategoryRoundResultAdapter extends TypeAdapter<CategoryRoundResult> {
+  @override
+  final typeId = 7;
+
+  @override
+  CategoryRoundResult read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CategoryRoundResult(
+      categoryId: fields[0] as String,
+      categoryName: fields[1] as String,
+      correctAttempts: (fields[2] as num).toInt(),
+      totalAttempts: (fields[3] as num).toInt(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, CategoryRoundResult obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.categoryId)
+      ..writeByte(1)
+      ..write(obj.categoryName)
+      ..writeByte(2)
+      ..write(obj.correctAttempts)
+      ..writeByte(3)
+      ..write(obj.totalAttempts);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryRoundResultAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class TrainingSessionModelAdapter extends TypeAdapter<TrainingSessionModel> {
+  @override
+  final typeId = 8;
+
+  @override
+  TrainingSessionModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return TrainingSessionModel(
+      id: fields[0] as String,
+      startedAt: (fields[1] as num).toInt(),
+      endedAt: (fields[2] as num?)?.toInt(),
+      status: fields[3] == null
+          ? TrainingSessionStatus.active
+          : fields[3] as TrainingSessionStatus,
+      categoryIds: fields[4] == null ? [] : (fields[4] as List).cast<String>(),
+      currentCategoryIndex: fields[5] == null ? 0 : (fields[5] as num).toInt(),
+      points: fields[6] == null ? 0 : (fields[6] as num).toInt(),
+      currentCorrectAttempts: fields[7] == null
+          ? 0
+          : (fields[7] as num).toInt(),
+      currentTotalAttempts: fields[8] == null ? 0 : (fields[8] as num).toInt(),
+      solvedQuestionIds: fields[9] == null
+          ? []
+          : (fields[9] as List).cast<String>(),
+      categoryResults: fields[10] == null
+          ? []
+          : (fields[10] as List).cast<CategoryRoundResult>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, TrainingSessionModel obj) {
+    writer
+      ..writeByte(11)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.startedAt)
+      ..writeByte(2)
+      ..write(obj.endedAt)
+      ..writeByte(3)
+      ..write(obj.status)
+      ..writeByte(4)
+      ..write(obj.categoryIds)
+      ..writeByte(5)
+      ..write(obj.currentCategoryIndex)
+      ..writeByte(6)
+      ..write(obj.points)
+      ..writeByte(7)
+      ..write(obj.currentCorrectAttempts)
+      ..writeByte(8)
+      ..write(obj.currentTotalAttempts)
+      ..writeByte(9)
+      ..write(obj.solvedQuestionIds)
+      ..writeByte(10)
+      ..write(obj.categoryResults);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TrainingSessionModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

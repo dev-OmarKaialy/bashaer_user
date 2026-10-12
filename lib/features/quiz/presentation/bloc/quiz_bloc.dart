@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -32,20 +34,36 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       emit(state.copyWith(loadStatus: RequestStatus.failed));
       return;
     }
+
+    // A resumed training session restores the questions already solved, and
+    // continues from the first one that is not.
+    final solved = event.solvedQuestionIds.toSet();
+    final selectedAnswers = {
+      for (final q in event.questions)
+        if (solved.contains(q.id)) q.id: q.correctAnswerIds.toSet(),
+    };
+    final correctness = {for (final id in selectedAnswers.keys) id: true};
+    final firstUnsolved = event.questions.indexWhere((q) => !solved.contains(q.id));
+
     emit(
       state.copyWith(
         phase: QuizPhase.answering,
         questions: event.questions,
         mode: event.mode,
         examTitle: event.title,
-        currentIndex: 0,
-        selectedAnswers: const {},
+        currentIndex: firstUnsolved < 0 ? 0 : firstUnsolved,
+        selectedAnswers: selectedAnswers,
         markedQuestions: const {},
-        correctnessByQuestion: const {},
+        correctnessByQuestion: correctness,
         remainingSeconds: event.examTimeSeconds ?? 0,
         examDurationSeconds: event.examTimeSeconds ?? 0,
         loadStatus: RequestStatus.success,
         selectionSerial: 0,
+        points: event.initialPoints,
+        correctAttempts: event.initialCorrectAttempts,
+        totalAttempts: event.initialTotalAttempts,
+        attemptSerial: 0,
+        streak: event.initialStreak,
       ),
     );
   }
@@ -53,10 +71,13 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
   void _onSelectAnswer(SelectAnswerEvent event, Emitter<QuizState> emit) {
     final question = state.currentQuestion;
     if (question == null || question.id != event.questionId) return;
+    // A solved practice question stays solved, so its points can't be farmed.
+    if (state.isPractice && state.isCorrect(question.id)) return;
 
     final isMulti = question.type == QuestionType.multipleChoice;
     final nextSelections = Map<String, Set<String>>.from(state.selectedAnswers);
-    final current = Set<String>.from(state.selectionsOf(event.questionId));
+    final previous = state.selectionsOf(event.questionId);
+    final current = Set<String>.from(previous);
 
     if (isMulti) {
       if (!current.remove(event.answerId)) {
@@ -68,6 +89,11 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     }
 
     final nextCorrectness = Map<String, bool>.from(state.correctnessByQuestion);
+    var points = state.points;
+    var correctAttempts = state.correctAttempts;
+    var totalAttempts = state.totalAttempts;
+    var attemptSerial = state.attemptSerial;
+    var streak = state.streak;
 
     // Practice mode gives instant correctness feedback and feeds the mistakes log.
     if (state.isPractice) {
@@ -76,6 +102,18 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       nextCorrectness[event.questionId] = isCorrect;
       final questionId = event.questionId;
       _recordAnswer(RecordAnswerParams(questionId: questionId, wasCorrect: isCorrect));
+
+      // An attempt is a complete answer (as many options as correct ones)
+      // that differs from the previous one: +1 when right, −1 when wrong.
+      final isComplete = selection.length == question.correctAnswerIds.toSet().length;
+      final isRepeat = selection.length == previous.length && selection.containsAll(previous);
+      if (isComplete && !isRepeat) {
+        totalAttempts++;
+        if (isCorrect) correctAttempts++;
+        points = math.max(0, points + (isCorrect ? 1 : -1));
+        streak = isCorrect ? streak + 1 : 0;
+        attemptSerial++;
+      }
     }
 
     emit(
@@ -83,6 +121,11 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         selectedAnswers: nextSelections,
         correctnessByQuestion: nextCorrectness,
         selectionSerial: state.selectionSerial + 1,
+        points: points,
+        correctAttempts: correctAttempts,
+        totalAttempts: totalAttempts,
+        attemptSerial: attemptSerial,
+        streak: streak,
       ),
     );
   }
@@ -159,7 +202,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         markedQuestions: const {},
         correctnessByQuestion: const {},
         remainingSeconds: 0,
-        outcome: null,
+        clearOutcome: true,
       ),
     );
     add(

@@ -21,6 +21,11 @@ final class LoadQuizEvent extends QuizEvent {
     required this.mode,
     this.examTimeSeconds,
     this.title,
+    this.initialPoints = 0,
+    this.initialCorrectAttempts = 0,
+    this.initialTotalAttempts = 0,
+    this.solvedQuestionIds = const [],
+    this.initialStreak = 0,
   });
 
   final List<QuestionModel> questions;
@@ -28,8 +33,31 @@ final class LoadQuizEvent extends QuizEvent {
   final int? examTimeSeconds;
   final String? title;
 
+  /// Points carried in from a training session, so the running total
+  /// continues instead of restarting at zero.
+  final int initialPoints;
+
+  /// Attempt counters and solved questions restored when a training session
+  /// is resumed half way through a category.
+  final int initialCorrectAttempts;
+  final int initialTotalAttempts;
+  final List<String> solvedQuestionIds;
+
+  /// Correct-answer streak carried in from the previous training category.
+  final int initialStreak;
+
   @override
-  List<Object?> get props => [questions, mode, examTimeSeconds, title];
+  List<Object?> get props => [
+    questions,
+    mode,
+    examTimeSeconds,
+    title,
+    initialPoints,
+    initialCorrectAttempts,
+    initialTotalAttempts,
+    solvedQuestionIds,
+    initialStreak,
+  ];
 }
 
 final class SelectAnswerEvent extends QuizEvent {

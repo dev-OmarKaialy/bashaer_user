@@ -6,6 +6,7 @@ import '../../../../core/unified_api/error/failure.dart';
 import '../models/category_model.dart';
 import '../models/question_model.dart';
 import '../models/quiz_result_model.dart';
+import '../models/training_session_model.dart';
 
 /// Device-local storage, backed by Hive.
 ///
@@ -25,9 +26,15 @@ abstract class QuizLocalDatasource {
   Future<void> appendAnswerLog(AnswerLogEntry entry);
   Future<List<QuizResultModel>> getResults();
   Future<void> saveResult(QuizResultModel result);
+  Future<TrainingSessionModel?> getActiveSession();
+  Future<void> saveActiveSession(TrainingSessionModel session);
+  Future<void> clearActiveSession();
+  Future<List<TrainingSessionModel>> getSessionHistory();
+  Future<void> appendSessionHistory(TrainingSessionModel session);
 
-  /// Wipes the answer log and exam results. Bookmarks are left alone — they are
-  /// the student's saved questions, not statistics.
+  /// Wipes the answer log, exam results and training session history.
+  /// Bookmarks are left alone — they are the student's saved questions, not
+  /// statistics.
   Future<void> clearStatistics();
 
   /// Wipes the saved (bookmarked) questions, leaving statistics alone.
@@ -142,9 +149,39 @@ class QuizLocalDatasourceImpl implements QuizLocalDatasource {
   }
 
   @override
+  Future<TrainingSessionModel?> getActiveSession() async {
+    final stored = _progress.get(QuizProgressKeys.activeSession);
+    return stored is TrainingSessionModel ? stored : null;
+  }
+
+  @override
+  Future<void> saveActiveSession(TrainingSessionModel session) {
+    return _progress.put(QuizProgressKeys.activeSession, session);
+  }
+
+  @override
+  Future<void> clearActiveSession() {
+    return _progress.delete(QuizProgressKeys.activeSession);
+  }
+
+  @override
+  Future<List<TrainingSessionModel>> getSessionHistory() async {
+    final stored = _progress.get(QuizProgressKeys.sessionHistory);
+    if (stored is! List) return const [];
+    return stored.whereType<TrainingSessionModel>().toList();
+  }
+
+  @override
+  Future<void> appendSessionHistory(TrainingSessionModel session) async {
+    final existing = await getSessionHistory();
+    await _progress.put(QuizProgressKeys.sessionHistory, [session, ...existing]);
+  }
+
+  @override
   Future<void> clearStatistics() async {
     await _progress.delete(QuizProgressKeys.answerLog);
     await _progress.delete(QuizProgressKeys.results);
+    await _progress.delete(QuizProgressKeys.sessionHistory);
   }
 
   @override

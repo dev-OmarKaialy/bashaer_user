@@ -7,10 +7,14 @@ import 'race_button.dart';
 import 'race_card.dart';
 
 /// Pops in a dialog with a springy scale + fade over a tinted barrier.
-Future<T?> showRaceDialog<T>({required BuildContext context, required WidgetBuilder builder}) {
+Future<T?> showRaceDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+}) {
   return showGeneralDialog<T>(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: barrierDismissible,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: AppTheme.ink.withValues(alpha: 0.45),
     transitionDuration: AppTheme.animationNormal,
@@ -38,10 +42,14 @@ class RaceConfirmDialog extends StatelessWidget {
     this.gradient = AppTheme.sunsetGradient,
     this.confirmLabel,
     this.cancelLabel,
+    this.onCancel,
   });
 
   final String title;
   final VoidCallback onConfirm;
+
+  /// Called after the cancel button closes the dialog (not on barrier taps).
+  final VoidCallback? onCancel;
   final IconData icon;
   final LinearGradient gradient;
   final String? confirmLabel;
@@ -78,7 +86,10 @@ class RaceConfirmDialog extends StatelessWidget {
                           variant: RaceButtonVariant.soft,
                           gradient: AppTheme.grapeGradient,
                           dense: true,
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            onCancel?.call();
+                          },
                         ),
                       ),
                       SizedBox(width: 12.w),

@@ -4,6 +4,7 @@ import '../../../../core/unified_api/error/failure.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_result_model.dart';
+import '../../data/models/training_session_model.dart';
 
 /// Contract for the quiz question bank and user progress storage.
 abstract class QuizRepository {
@@ -23,7 +24,14 @@ abstract class QuizRepository {
   Future<Either<Failure, List<QuizResultModel>>> getResults();
   Future<Either<Failure, void>> saveResult(QuizResultModel result);
 
-  /// Clears the answer log and exam results, keeping bookmarks.
+  /// The unfinished training session, or null when there is none.
+  Future<Either<Failure, TrainingSessionModel?>> getActiveSession();
+  Future<Either<Failure, void>> saveActiveSession(TrainingSessionModel session);
+  Future<Either<Failure, void>> clearActiveSession();
+  Future<Either<Failure, List<TrainingSessionModel>>> getSessionHistory();
+  Future<Either<Failure, void>> appendSessionHistory(TrainingSessionModel session);
+
+  /// Clears the answer log, exam results and training history, keeping bookmarks.
   Future<Either<Failure, void>> clearStatistics();
 
   /// Clears the bookmarked questions, keeping statistics.

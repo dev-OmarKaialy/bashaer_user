@@ -16,10 +16,14 @@ import '../../../../core/widgets/race/speed_gauge.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/quiz_result_model.dart';
 import '../../data/models/stats_model.dart';
+import '../../data/models/training_session_model.dart';
 import '../bloc/progress_bloc.dart';
 import '../bloc/progress_state.dart';
+import '../bloc/training_session_bloc.dart';
+import '../bloc/training_session_state.dart';
 import '../widgets/category_icon.dart';
 import '../widgets/empty_placeholder.dart';
+import 'training_results_screen.dart';
 
 /// Whole-app study statistics: accuracy gauge, exam dials, per-category
 /// "fuel" bars and the lap history of full exams.
@@ -80,6 +84,7 @@ class StatisticsScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              const _SessionHistorySliver(),
               SliverPadding(
                 padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 0),
                 sliver: SliverList.list(
@@ -347,6 +352,123 @@ class _ResultRow extends StatelessWidget {
               ),
             ),
             Text('${result.accuracy.round()}%', style: AppTheme.numberStyle(20.sp, color: color)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Ended training sessions, newest first. Completed ones open their results.
+class _SessionHistorySliver extends StatelessWidget {
+  const _SessionHistorySliver();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<TrainingSessionBloc, TrainingSessionState, List<TrainingSessionModel>>(
+      selector: (state) => state.history,
+      builder: (context, history) {
+        return SliverPadding(
+          padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 0),
+          sliver: SliverMainAxisGroup(
+            slivers: [
+              SliverList.list(
+                children: [
+                  SectionHeader(
+                    title: 'statistics.sessionsTitle'.tr(),
+                    color: AppTheme.electricViolet,
+                  ),
+                  SizedBox(height: 12.h),
+                  if (history.isEmpty) _InlineEmpty(message: 'statistics.sessionsEmpty'.tr()),
+                ],
+              ),
+              SliverList.builder(
+                itemCount: history.length,
+                itemBuilder: (context, i) => Entrance(
+                  index: i,
+                  child: _SessionRow(session: history[i]),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SessionRow extends StatelessWidget {
+  const _SessionRow({required this.session});
+
+  final TrainingSessionModel session;
+
+  @override
+  Widget build(BuildContext context) {
+    final completed = session.status == TrainingSessionStatus.completed;
+    final accuracy = session.accuracy.round();
+    final date = DateFormat.yMMMd(
+      context.locale.toString(),
+    ).format(DateTime.fromMillisecondsSinceEpoch(session.endedAt ?? session.startedAt));
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10.h),
+      child: RaceCard(
+        onTap: completed
+            ? () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => TrainingResultsScreen(session: session)),
+              )
+            : null,
+        semanticLabel: '${'statistics.sessionsTitle'.tr()} $date',
+        padding: EdgeInsets.all(12.r),
+        child: Row(
+          children: [
+            GradientIconBadge(
+              gradient: completed ? AppTheme.limeGradient : AppTheme.goldGradient,
+              size: 44,
+              child: FaIcon(
+                completed ? FontAwesomeIcons.flagCheckered : FontAwesomeIcons.circlePause,
+                size: 18.r,
+                color: AppTheme.onPrimaryColor,
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          date,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                      SizedBox(width: 6.w),
+                      RaceTag(
+                        label: completed
+                            ? 'statistics.sessionCompleted'.tr()
+                            : 'statistics.sessionStopped'.tr(),
+                        color: completed ? AppTheme.successColor : AppTheme.turboOrange,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    '${session.points} ${'quiz.points'.tr()} · '
+                    '${'training.correctAttempts'.tr()}: '
+                    '${session.correctAttempts}/${session.totalAttempts}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              '$accuracy%',
+              style: AppTheme.numberStyle(20.sp, color: AppTheme.scoreColor(accuracy.toDouble())),
+            ),
           ],
         ),
       ),

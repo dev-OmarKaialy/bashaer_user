@@ -37,6 +37,12 @@ class QuizProgressKeys {
 
   /// Whether Listen mode (TTS / question audio) is enabled for non-readers.
   static const listenMode = 'listen_mode';
+
+  /// The unfinished training session, kept so it can be resumed.
+  static const activeSession = 'active_training_session';
+
+  /// Ended training sessions (completed or stopped), newest first.
+  static const sessionHistory = 'training_session_history';
 }
 
 /// Opens Hive and every box the app uses.
